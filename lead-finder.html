@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LARISA Lead Finder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #050505;
+            color: white;
+            min-height: 100vh;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+        .glass-input {
+            background: rgba(0, 0, 0, 0.24);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .blob {
+            position: fixed;
+            border-radius: 9999px;
+            filter: blur(8px);
+            opacity: 0.7;
+            pointer-events: none;
+            animation: float 12s ease-in-out infinite alternate;
+        }
+        @keyframes float {
+            from { transform: translate3d(0, 0, 0) scale(1); }
+            to { transform: translate3d(40px, -30px, 0) scale(1.08); }
+        }
+        ::-webkit-scrollbar { width: 7px; height: 7px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 999px; }
+    </style>
+</head>
+<body class="relative overflow-x-hidden">
+    <div class="blob top-[-10rem] left-[-8rem] w-[32rem] h-[32rem] bg-pink-600/40"></div>
+    <div class="blob top-[8rem] right-[-10rem] w-[38rem] h-[38rem] bg-purple-700/40" style="animation-delay: 2s;"></div>
+    <div class="blob bottom-[-12rem] left-[25%] w-[34rem] h-[34rem] bg-indigo-700/35" style="animation-delay: 4s;"></div>
+
+    <main class="relative z-10 max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+        <header class="glass rounded-[2rem] p-5 sm:p-7 mb-6 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+                <a href="index.html" class="text-white/50 hover:text-white text-sm transition">← Назад в LARISA AI</a>
+                <h1 class="text-3xl sm:text-4xl font-semibold mt-3 tracking-tight">Lead Finder</h1>
+                <p class="text-white/55 mt-2 max-w-2xl">Автоматический аудит сайтов, скоринг лидов, персональные сообщения и мини-CRM для поиска клиентов на разработку.</p>
+            </div>
+            <div class="grid grid-cols-3 gap-3 min-w-full sm:min-w-[420px]">
+                <div class="glass rounded-2xl p-4">
+                    <div id="total-leads" class="text-2xl font-semibold">0</div>
+                    <div class="text-xs text-white/45 mt-1">лидов</div>
+                </div>
+                <div class="glass rounded-2xl p-4">
+                    <div id="hot-leads" class="text-2xl font-semibold text-pink-300">0</div>
+                    <div class="text-xs text-white/45 mt-1">горячих</div>
+                </div>
+                <div class="glass rounded-2xl p-4">
+                    <div id="avg-score" class="text-2xl font-semibold text-purple-300">0</div>
+                    <div class="text-xs text-white/45 mt-1">средний score</div>
+                </div>
+            </div>
+        </header>
+
+        <section class="grid grid-cols-1 xl:grid-cols-[430px_1fr] gap-6">
+            <aside class="flex flex-col gap-6">
+                <div class="glass rounded-[2rem] p-5 sm:p-6">
+                    <h2 class="text-xl font-semibold">1. Импорт лидов</h2>
+                    <p class="text-sm text-white/50 mt-2">Вставь список бизнесов. Формат: название, сайт, email, телефон. Подойдут CSV, строки через | или просто сайт.</p>
+                    <textarea id="lead-input" rows="9" class="glass-input mt-4 w-full rounded-2xl px-4 py-3 text-sm outline-none focus:ring-1 focus:ring-pink-500/60 placeholder-white/30" placeholder="Ромашка клиника, https://example.com, hello@example.com, +7...
+Барбершоп 77 | barber77.ru | info@barber77.ru
+https://old-site.ru"></textarea>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+                        <input id="default-city" class="glass-input rounded-2xl px-4 py-3 text-sm outline-none focus:ring-1 focus:ring-pink-500/60" placeholder="Город, напр. Москва">
+                        <input id="default-niche" class="glass-input rounded-2xl px-4 py-3 text-sm outline-none focus:ring-1 focus:ring-pink-500/60" placeholder="Ниша, напр. клиника">
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-3 mt-4">
+                        <button id="import-btn" class="flex-1 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600 px-5 py-3 font-medium hover:opacity-90 active:scale-[0.99] transition">Импортировать</button>
+                        <button id="sample-btn" class="rounded-2xl bg-white/10 px-5 py-3 font-medium text-white/80 hover:bg-white/15 transition">Пример</button>
+                    </div>
+                </div>
+
+                <div class="glass rounded-[2rem] p-5 sm:p-6">
+                    <h2 class="text-xl font-semibold">2. Быстрый поиск</h2>
+                    <p class="text-sm text-white/50 mt-2">Генерирует ссылки на выдачи, откуда можно быстро собрать сайты и контакты.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                        <input id="search-city" class="glass-input rounded-2xl px-4 py-3 text-sm outline-none focus:ring-1 focus:ring-pink-500/60" placeholder="Город">
+                        <input id="search-niche" class="glass-input rounded-2xl px-4 py-3 text-sm outline-none focus:ring-1 focus:ring-pink-500/60" placeholder="Ниша">
+                    </div>
+                    <button id="build-search-btn" class="w-full mt-3 rounded-2xl bg-white/10 px-5 py-3 font-medium text-white/85 hover:bg-white/15 transition">Сделать ссылки поиска</button>
+                    <div id="search-links" class="mt-4 flex flex-col gap-2"></div>
+                </div>
+
+                <div class="glass rounded-[2rem] p-5 sm:p-6">
+                    <h2 class="text-xl font-semibold">3. Автоматизация</h2>
+                    <p class="text-sm text-white/50 mt-2">PageSpeed API проверяет мобильную скорость. Остальное считается по данным лида и найденным проблемам.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                        <button id="audit-btn" class="rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 px-5 py-3 font-medium hover:opacity-90 transition">Аудит всех</button>
+                        <button id="draft-btn" class="rounded-2xl bg-gradient-to-r from-pink-500 to-rose-500 px-5 py-3 font-medium hover:opacity-90 transition">Сгенерировать тексты</button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+                        <button id="export-btn" class="rounded-2xl bg-white/10 px-5 py-3 font-medium text-white/85 hover:bg-white/15 transition">Экспорт CSV</button>
+                        <button id="clear-btn" class="rounded-2xl bg-white/5 px-5 py-3 font-medium text-white/55 hover:bg-red-500/20 hover:text-red-200 transition">Очистить</button>
+                    </div>
+                    <div id="progress" class="hidden mt-4">
+                        <div class="flex justify-between text-xs text-white/50 mb-2"><span id="progress-label">Аудит...</span><span id="progress-count">0/0</span></div>
+                        <div class="h-2 bg-white/10 rounded-full overflow-hidden"><div id="progress-bar" class="h-full w-0 bg-gradient-to-r from-pink-500 to-purple-600 transition-all"></div></div>
+                    </div>
+                </div>
+            </aside>
+
+            <section class="glass rounded-[2rem] p-4 sm:p-6 min-h-[720px] flex flex-col">
+                <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between mb-4">
+                    <div>
+                        <h2 class="text-xl font-semibold">CRM очередь</h2>
+                        <p class="text-sm text-white/45 mt-1">Проверяй сообщения вручную, копируй и отправляй только подходящим бизнесам.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <select id="status-filter" class="glass-input rounded-xl px-3 py-2 text-sm outline-none">
+                            <option value="all">Все статусы</option>
+                            <option value="new">Новые</option>
+                            <option value="drafted">Есть текст</option>
+                            <option value="contacted">Отправлено</option>
+                            <option value="replied">Ответили</option>
+                            <option value="not-fit">Не подходит</option>
+                        </select>
+                        <select id="sort-mode" class="glass-input rounded-xl px-3 py-2 text-sm outline-none">
+                            <option value="score">Score ↓</option>
+                            <option value="name">Название</option>
+                            <option value="status">Статус</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="empty-state" class="flex-1 flex items-center justify-center text-center text-white/45">
+                    <div>
+                        <div class="text-5xl mb-4">⌁</div>
+                        <p class="text-lg text-white/70">Пока нет лидов</p>
+                        <p class="text-sm mt-2 max-w-sm">Вставь сайты/бизнесы слева, нажми импорт, затем запусти аудит и генерацию сообщений.</p>
+                    </div>
+                </div>
+                <div id="lead-list" class="hidden flex-1 overflow-y-auto pr-1 space-y-3"></div>
+            </section>
+        </section>
+    </main>
+
+    <script>
+        const STORAGE_KEY = 'larisa_lead_finder_v1';
+        const leadInput = document.getElementById('lead-input');
+        const defaultCity = document.getElementById('default-city');
+        const defaultNiche = document.getElementById('default-niche');
+        const leadList = document.getElementById('lead-list');
+        const emptyState = document.getElementById('empty-state');
+        const progress = document.getElementById('progress');
+        const progressLabel = document.getElementById('progress-label');
+        const progressCount = document.getElementById('progress-count');
+        const progressBar = document.getElementById('progress-bar');
+        let leads = loadLeads();
+
+        const statusLabels = {
+            new: 'Новый',
+            audited: 'Проверен',
+            drafted: 'Есть текст',
+            contacted: 'Отправлено',
+            replied: 'Ответили',
+            'not-fit': 'Не подходит'
+        };
+
+        const sampleLeads = `Smile Dent, https://example.com, hello@example.com, +7 999 111-22-33
+Барбершоп Север | http://example.org | info@barber.test
+https://example.net
+Студия красоты Луна, , instagram.com/luna_beauty`;
+
+        document.getElementById('sample-btn').addEventListener('click', () => {
+            leadInput.value = sampleLeads;
+            defaultCity.value = 'Москва';
+            defaultNiche.value = 'локальный бизнес';
+        });
+
+        document.getElementById('import-btn').addEventListener('click', () => {
+            const imported = parseLeadInput(leadInput.value, defaultCity.value.trim(), defaultNiche.value.trim());
+            const knownKeys = new Set(leads.map(lead => `${lead.name}|${lead.website}|${lead.email}`.toLowerCase()));
+            const fresh = imported.filter(lead => !knownKeys.has(`${lead.name}|${lead.website}|${lead.email}`.toLowerCase()));
+            leads = [...leads, ...fresh];
+            saveLeads();
+            render();
+        });
+
+        document.getElementById('build-search-btn').addEventListener('click', () => {
+            const city = document.getElementById('search-city').value.trim() || 'Москва';
+            const niche = document.getElementById('search-niche').value.trim() || 'клиники';
+            const queries = [
+                ['Google Maps', `https://www.google.com/maps/search/${encodeURIComponent(`${niche} ${city}`)}`],
+                ['Google сайты без HTTPS', `https://www.google.com/search?q=${encodeURIComponent(`${niche} ${city} сайт http -https`)}`],
+                ['2GIS', `https://2gis.ru/search/${encodeURIComponent(`${niche} ${city}`)}`],
+                ['Яндекс Карты', `https://yandex.ru/maps/?text=${encodeURIComponent(`${niche} ${city}`)}`],
+                ['Каталоги компаний', `https://www.google.com/search?q=${encodeURIComponent(`${niche} ${city} каталог компаний email сайт`)}`]
+            ];
+            document.getElementById('search-links').innerHTML = queries.map(([label, url]) => `<a class="rounded-xl bg-white/8 hover:bg-white/14 border border-white/8 px-4 py-3 text-sm text-white/80 transition" target="_blank" rel="noopener" href="${url}">${label} →</a>`).join('');
+        });
+
+        document.getElementById('audit-btn').addEventListener('click', auditAll);
+        document.getElementById('draft-btn').addEventListener('click', () => {
+            leads = leads.map(lead => ({ ...lead, message: buildMessage(lead), status: lead.status === 'new' || lead.status === 'audited' ? 'drafted' : lead.status }));
+            saveLeads();
+            render();
+        });
+        document.getElementById('export-btn').addEventListener('click', exportCsv);
+        document.getElementById('clear-btn').addEventListener('click', () => {
+            if (!confirm('Очистить все лиды?')) return;
+            leads = [];
+            saveLeads();
+            render();
+        });
+        document.getElementById('status-filter').addEventListener('change', render);
+        document.getElementById('sort-mode').addEventListener('change', render);
+
+        function parseLeadInput(raw, city, niche) {
+            return raw.split(/\n+/)
+                .map(line => line.trim())
+                .filter(Boolean)
+                .map(line => {
+                    const parts = line.split(/[|,;]/).map(part => part.trim()).filter(Boolean);
+                    const urlPart = parts.find(part => looksLikeUrl(part)) || '';
+                    const emailPart = parts.find(part => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(part)) || '';
+                    const phonePart = parts.find(part => /(\+?\d[\d\s().-]{6,})/.test(part)) || '';
+                    const namePart = parts.find(part => part !== urlPart && part !== emailPart && part !== phonePart) || urlPart || 'Без названия';
+                    return {
+                        id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`,
+                        name: cleanName(namePart),
+                        website: normalizeUrl(urlPart),
+                        email: emailPart,
+                        phone: phonePart,
+                        city,
+                        niche,
+                        score: 0,
+                        status: 'new',
+                        issues: [],
+                        metrics: {},
+                        message: '',
+                        notes: '',
+                        createdAt: new Date().toISOString()
+                    };
+                });
+        }
+
+        function looksLikeUrl(value) {
+            return /^(https?:\/\/)?([\w-]+\.)+[\w-]{2,}/i.test(value) || /^(instagram|t\.me|vk\.com|wa\.me)\//i.test(value);
+        }
+
+        function normalizeUrl(value) {
+            if (!value) return '';
+            const trimmed = value.trim();
+            if (/^https?:\/\//i.test(trimmed)) return trimmed;
+            if (/^(instagram|t\.me|vk\.com|wa\.me)\//i.test(trimmed)) return `https://${trimmed}`;
+            return `https://${trimmed}`;
+        }
+
+        function cleanName(value) {
+            return value.replace(/^https?:\/\//i, '').replace(/^www\./i, '').replace(/\/$/, '').trim();
+        }
+
+        async function auditAll() {
+            if (!leads.length) return;
+            progress.classList.remove('hidden');
+            for (let index = 0; index < leads.length; index += 1) {
+                progressLabel.textContent = `Аудит: ${leads[index].name}`;
+                progressCount.textContent = `${index + 1}/${leads.length}`;
+                progressBar.style.width = `${Math.round(((index + 1) / leads.length) * 100)}%`;
+                leads[index] = await auditLead(leads[index]);
+                saveLeads();
+                render();
+            }
+            setTimeout(() => progress.classList.add('hidden'), 600);
+        }
+
+        async function auditLead(lead) {
+            const issues = [];
+            const metrics = {};
+            let score = 20;
+
+            if (!lead.website) {
+                issues.push('нет сайта — можно продать быстрый лендинг');
+                score += 35;
+            } else {
+                if (lead.website.startsWith('http://')) {
+                    issues.push('сайт без HTTPS');
+                    score += 20;
+                }
+                if (/instagram|vk\.com|t\.me|wa\.me/i.test(lead.website)) {
+                    issues.push('вместо сайта только соцсеть/мессенджер');
+                    score += 25;
+                } else {
+                    try {
+                        const url = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(lead.website)}&strategy=mobile&category=performance&category=seo&category=accessibility`;
+                        const response = await fetch(url);
+                        if (!response.ok) throw new Error(`PageSpeed ${response.status}`);
+                        const data = await response.json();
+                        const categories = data.lighthouseResult.categories;
+                        const audits = data.lighthouseResult.audits;
+                        metrics.performance = Math.round((categories.performance?.score || 0) * 100);
+                        metrics.seo = Math.round((categories.seo?.score || 0) * 100);
+                        metrics.accessibility = Math.round((categories.accessibility?.score || 0) * 100);
+                        metrics.lcp = audits['largest-contentful-paint']?.displayValue || '';
+                        metrics.cls = audits['cumulative-layout-shift']?.displayValue || '';
+
+                        if (metrics.performance < 50) {
+                            issues.push(`мобильная скорость ${metrics.performance}/100`);
+                            score += 30;
+                        } else if (metrics.performance < 75) {
+                            issues.push(`средняя мобильная скорость ${metrics.performance}/100`);
+                            score += 15;
+                        }
+                        if (metrics.seo < 80) {
+                            issues.push(`SEO ${metrics.seo}/100`);
+                            score += 12;
+                        }
+                        if (metrics.accessibility < 80) {
+                            issues.push(`доступность ${metrics.accessibility}/100`);
+                            score += 8;
+                        }
+                    } catch (error) {
+                        issues.push('PageSpeed не смог проверить сайт');
+                        score += 8;
+                        metrics.error = error.message;
+                    }
+                }
+            }
+
+            if (!lead.email && !lead.phone) {
+                issues.push('не указан прямой контакт');
+                score += 10;
+            }
+            if (!issues.length) issues.push('явных проблем мало — нужен ручной аудит оффера');
+
+            return {
+                ...lead,
+                score: Math.min(score, 100),
+                issues,
+                metrics,
+                status: lead.status === 'new' ? 'audited' : lead.status
+            };
+        }
+
+        function buildMessage(lead) {
+            const issueText = lead.issues.length ? lead.issues.slice(0, 2).join(' и ') : 'можно усилить сайт для заявок';
+            const contactName = lead.name || 'ваш бизнес';
+            const service = pickService(lead);
+            return `Привет! Посмотрел ${contactName}${lead.website ? ` (${lead.website})` : ''}. Заметил: ${issueText}.
+
+Я занимаюсь разработкой и могу быстро помочь: ${service}. Цель — чтобы клиенту было проще оставить заявку/записаться, а вам проще получать обращения.
+
+Могу бесплатно скинуть 2–3 конкретных идеи по улучшению вашего сайта?`;
+        }
+
+        function pickService(lead) {
+            const joined = lead.issues.join(' ').toLowerCase();
+            if (joined.includes('нет сайта') || joined.includes('соцсеть')) return 'сделать простой лендинг/мини-сайт с заявками';
+            if (joined.includes('скорость')) return 'ускорить мобильную версию и поправить первый экран';
+            if (joined.includes('seo')) return 'поправить базовое SEO и структуру страниц';
+            return 'улучшить форму заявки, первый экран и конверсию';
+        }
+
+        function render() {
+            renderStats();
+            const statusFilter = document.getElementById('status-filter').value;
+            const sortMode = document.getElementById('sort-mode').value;
+            let visible = [...leads];
+            if (statusFilter !== 'all') visible = visible.filter(lead => lead.status === statusFilter);
+            visible.sort((a, b) => {
+                if (sortMode === 'name') return a.name.localeCompare(b.name, 'ru');
+                if (sortMode === 'status') return a.status.localeCompare(b.status);
+                return b.score - a.score;
+            });
+
+            emptyState.classList.toggle('hidden', leads.length > 0);
+            leadList.classList.toggle('hidden', leads.length === 0);
+            leadList.innerHTML = visible.map(renderLeadCard).join('');
+            bindCardActions();
+        }
+
+        function renderStats() {
+            const total = leads.length;
+            const hot = leads.filter(lead => lead.score >= 70).length;
+            const avg = total ? Math.round(leads.reduce((sum, lead) => sum + lead.score, 0) / total) : 0;
+            document.getElementById('total-leads').textContent = total;
+            document.getElementById('hot-leads').textContent = hot;
+            document.getElementById('avg-score').textContent = avg;
+        }
+
+        function renderLeadCard(lead) {
+            const scoreColor = lead.score >= 70 ? 'text-pink-300 bg-pink-500/15' : lead.score >= 45 ? 'text-yellow-200 bg-yellow-500/15' : 'text-white/65 bg-white/10';
+            const website = lead.website ? `<a href="${escapeHtml(lead.website)}" target="_blank" rel="noopener" class="text-pink-300 hover:text-pink-200 break-all">${escapeHtml(lead.website)}</a>` : '<span class="text-white/35">сайт не указан</span>';
+            const metrics = Object.entries(lead.metrics || {}).filter(([key]) => key !== 'error').map(([key, value]) => `<span class="px-2 py-1 rounded-lg bg-white/7 text-white/55">${escapeHtml(key)}: ${escapeHtml(String(value))}</span>`).join('');
+            const issues = (lead.issues || []).map(issue => `<span class="px-2 py-1 rounded-lg bg-purple-500/15 text-purple-100">${escapeHtml(issue)}</span>`).join('');
+            return `<article class="rounded-3xl border border-white/10 bg-black/20 p-4 sm:p-5" data-id="${lead.id}">
+                <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                    <div class="min-w-0">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <h3 class="text-lg font-semibold">${escapeHtml(lead.name)}</h3>
+                            <span class="text-xs rounded-full px-2.5 py-1 ${scoreColor}">score ${lead.score}</span>
+                            <span class="text-xs rounded-full px-2.5 py-1 bg-white/8 text-white/55">${statusLabels[lead.status] || lead.status}</span>
+                        </div>
+                        <div class="text-sm text-white/50 mt-2">${website}</div>
+                        <div class="text-xs text-white/35 mt-1">${escapeHtml([lead.city, lead.niche, lead.email, lead.phone].filter(Boolean).join(' · '))}</div>
+                    </div>
+                    <select class="status-select glass-input rounded-xl px-3 py-2 text-sm outline-none" data-id="${lead.id}">
+                        ${Object.entries(statusLabels).map(([value, label]) => `<option value="${value}" ${lead.status === value ? 'selected' : ''}>${label}</option>`).join('')}
+                    </select>
+                </div>
+                <div class="flex flex-wrap gap-2 mt-4">${issues || '<span class="text-white/35 text-sm">Аудит еще не запускался</span>'}</div>
+                ${metrics ? `<div class="flex flex-wrap gap-2 mt-3 text-xs">${metrics}</div>` : ''}
+                <textarea class="message-box glass-input w-full mt-4 rounded-2xl px-4 py-3 text-sm outline-none focus:ring-1 focus:ring-pink-500/60" rows="5" data-id="${lead.id}" placeholder="Тут появится персональное сообщение">${escapeHtml(lead.message || '')}</textarea>
+                <div class="flex flex-wrap gap-2 mt-3">
+                    <button class="audit-one rounded-xl bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-100 px-3 py-2 text-sm transition" data-id="${lead.id}">Аудит</button>
+                    <button class="draft-one rounded-xl bg-pink-500/20 hover:bg-pink-500/30 text-pink-100 px-3 py-2 text-sm transition" data-id="${lead.id}">Текст</button>
+                    <button class="copy-one rounded-xl bg-white/10 hover:bg-white/15 text-white/80 px-3 py-2 text-sm transition" data-id="${lead.id}">Копировать</button>
+                    <button class="delete-one rounded-xl bg-white/5 hover:bg-red-500/20 text-white/45 hover:text-red-100 px-3 py-2 text-sm transition" data-id="${lead.id}">Удалить</button>
+                </div>
+            </article>`;
+        }
+
+        function bindCardActions() {
+            document.querySelectorAll('.status-select').forEach(select => {
+                select.addEventListener('change', event => updateLead(event.target.dataset.id, { status: event.target.value }));
+            });
+            document.querySelectorAll('.message-box').forEach(textarea => {
+                textarea.addEventListener('input', event => updateLead(event.target.dataset.id, { message: event.target.value }, false));
+                textarea.addEventListener('change', saveLeads);
+            });
+            document.querySelectorAll('.audit-one').forEach(button => {
+                button.addEventListener('click', async event => {
+                    const id = event.target.dataset.id;
+                    const index = leads.findIndex(lead => lead.id === id);
+                    if (index === -1) return;
+                    leads[index] = await auditLead(leads[index]);
+                    saveLeads();
+                    render();
+                });
+            });
+            document.querySelectorAll('.draft-one').forEach(button => {
+                button.addEventListener('click', event => {
+                    const lead = leads.find(item => item.id === event.target.dataset.id);
+                    if (!lead) return;
+                    updateLead(lead.id, { message: buildMessage(lead), status: 'drafted' });
+                });
+            });
+            document.querySelectorAll('.copy-one').forEach(button => {
+                button.addEventListener('click', async event => {
+                    const lead = leads.find(item => item.id === event.target.dataset.id);
+                    if (!lead || !lead.message) return;
+                    await navigator.clipboard.writeText(lead.message);
+                    event.target.textContent = 'Скопировано';
+                    setTimeout(() => { event.target.textContent = 'Копировать'; }, 1200);
+                });
+            });
+            document.querySelectorAll('.delete-one').forEach(button => {
+                button.addEventListener('click', event => {
+                    leads = leads.filter(lead => lead.id !== event.target.dataset.id);
+                    saveLeads();
+                    render();
+                });
+            });
+        }
+
+        function updateLead(id, patch, shouldRender = true) {
+            leads = leads.map(lead => lead.id === id ? { ...lead, ...patch } : lead);
+            saveLeads();
+            if (shouldRender) render();
+        }
+
+        function exportCsv() {
+            const headers = ['name', 'website', 'email', 'phone', 'city', 'niche', 'score', 'status', 'issues', 'message'];
+            const rows = leads.map(lead => headers.map(key => csvValue(key === 'issues' ? lead.issues.join('; ') : lead[key] || '')).join(','));
+            const csv = [headers.join(','), ...rows].join('\n');
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `larisa-leads-${new Date().toISOString().slice(0, 10)}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        function csvValue(value) {
+            return `"${String(value).replaceAll('"', '""')}"`;
+        }
+
+        function saveLeads() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(leads));
+        }
+
+        function loadLeads() {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            } catch {
+                return [];
+            }
+        }
+
+        function escapeHtml(value) {
+            return String(value)
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#039;');
+        }
+
+        render();
+    </script>
+</body>
+</html>
