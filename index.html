@@ -2,986 +2,1427 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LARISA AI | Liquid Glass</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Библиотека для парсинга Markdown -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- Подсветка синтаксиса кода -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/tokyo-night-dark.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-    <!-- Google Identity Services -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Портфолио барбершопа: стрижки, борода, уход, онлайн-запись и работы мастера.">
+    <title>BARBER HAUS — портфолио барбершопа</title>
+    <link rel="preconnect" href="https://images.unsplash.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+        :root {
+            --bg: #090806;
+            --bg-soft: #14110c;
+            --card: rgba(255, 248, 232, 0.08);
+            --card-strong: rgba(255, 248, 232, 0.13);
+            --text: #fff8e8;
+            --muted: rgba(255, 248, 232, 0.68);
+            --muted-strong: rgba(255, 248, 232, 0.84);
+            --gold: #dcae58;
+            --gold-light: #ffd98a;
+            --copper: #a85f33;
+            --line: rgba(255, 248, 232, 0.14);
+            --shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+            --radius: 28px;
+            --container: min(1180px, calc(100vw - 32px));
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: #050505;
             margin: 0;
-            overflow: hidden;
-            color: white;
+            background:
+                radial-gradient(circle at top left, rgba(220, 174, 88, 0.22), transparent 32rem),
+                radial-gradient(circle at 92% 10%, rgba(168, 95, 51, 0.24), transparent 30rem),
+                linear-gradient(180deg, #090806 0%, #130f0a 48%, #080705 100%);
+            color: var(--text);
+            font-family: Manrope, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            overflow-x: hidden;
         }
 
-        /* Анимации фона */
-        @keyframes blob {
-            0% { transform: translate3d(0px, 0px, 0) scale(1); }
-            33% { transform: translate3d(30px, -50px, 0) scale(1.1); }
-            66% { transform: translate3d(-20px, 20px, 0) scale(0.9); }
-            100% { transform: translate3d(0px, 0px, 0) scale(1); }
+        body::before {
+            position: fixed;
+            inset: 0;
+            z-index: -3;
+            content: "";
+            opacity: 0.36;
+            background-image:
+                linear-gradient(rgba(255, 248, 232, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 248, 232, 0.04) 1px, transparent 1px);
+            background-size: 58px 58px;
+            mask-image: linear-gradient(to bottom, black, transparent 82%);
         }
 
-        .animate-blob {
-            animation: blob 10s infinite alternate ease-in-out;
+        body::after {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            content: "";
+            pointer-events: none;
+            background: linear-gradient(120deg, rgba(255, 255, 255, 0.04), transparent 22%, rgba(255, 255, 255, 0.03) 42%, transparent 62%);
+            mix-blend-mode: screen;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        img {
+            display: block;
+            width: 100%;
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit;
+        }
+
+        .page-shell {
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .grain {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.13;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
+        }
+
+        .orb {
+            position: fixed;
+            z-index: -2;
+            width: 22rem;
+            height: 22rem;
+            border-radius: 999px;
+            filter: blur(28px);
+            opacity: 0.28;
+            transform: translate3d(0, 0, 0);
+            animation: drift 16s ease-in-out infinite alternate;
             will-change: transform;
-            -webkit-backface-visibility: hidden;
-            -webkit-transform: translate3d(0, 0, 0);
-        }
-        .animation-delay-2000 { animation-delay: 2s; }
-        .animation-delay-4000 { animation-delay: 4s; }
-
-        /* Оптимизированные градиенты с плавным переходом темы */
-        .blob-shape { border-radius: 50%; pointer-events: none; transition: background 1.5s ease-in-out; }
-        .blob-pink { background: radial-gradient(circle, rgba(219, 39, 119, 0.4) 0%, rgba(219, 39, 119, 0) 70%); }
-        .blob-purple { background: radial-gradient(circle, rgba(147, 51, 234, 0.4) 0%, rgba(147, 51, 234, 0) 70%); }
-        .blob-indigo { background: radial-gradient(circle, rgba(79, 70, 229, 0.4) 0%, rgba(79, 70, 229, 0) 70%); }
-
-        /* Glassmorphism */
-        .liquid-glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
-        }
-        .liquid-glass-input {
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
-        }
-        .liquid-glass-btn {
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
-        /* Сообщения */
-        .msg-enter {
-            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
-        .msg-user {
-            background: linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(168, 85, 247, 0.05));
-            border: 1px solid rgba(236, 72, 153, 0.2);
-            border-bottom-right-radius: 4px;
-        }
-        .msg-bot {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-bottom-left-radius: 4px;
+        .orb-one {
+            top: 8%;
+            left: -8rem;
+            background: var(--gold);
         }
 
-        /* Индикатор печати */
-        .typing-dot { animation: typing 1.4s infinite ease-in-out both; }
-        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
-        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes typing {
-            0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
-            40% { transform: scale(1); opacity: 1; }
+        .orb-two {
+            right: -10rem;
+            bottom: 12%;
+            background: var(--copper);
+            animation-delay: -6s;
         }
 
-        /* Скроллбар */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
-
-        /* MARKDOWN */
-        .markdown-body { line-height: 1.6; word-break: break-word; }
-        .markdown-body p { margin-bottom: 0.75em; }
-        .markdown-body p:last-child { margin-bottom: 0; }
-        .markdown-body ul { list-style-type: disc; margin-left: 1.5em; margin-bottom: 0.75em; }
-        .markdown-body ol { list-style-type: decimal; margin-left: 1.5em; margin-bottom: 0.75em; }
-        .markdown-body strong { color: rgba(255, 255, 255, 0.95); font-weight: 600; }
-        .markdown-body a { color: #f472b6; text-decoration: underline; }
-        .markdown-body code:not([class*="language-"]) { background: rgba(255, 255, 255, 0.1); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; color: #fbcfe8; }
-        .markdown-body pre { background: rgba(10, 10, 15, 0.8) !important; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; margin-top: 12px; margin-bottom: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .markdown-body pre code { font-family: 'JetBrains Mono', monospace; font-size: 0.85em; padding: 16px; display: block; overflow-x: auto; }
-        .code-header { display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.05); padding: 6px 16px; font-size: 11px; text-transform: uppercase; color: rgba(255, 255, 255, 0.5); border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-family: 'Inter', sans-serif;}
-        
-        /* Стили для сгенерированных картинок в Markdown */
-        .markdown-body img { max-width: 100%; border-radius: 0.75rem; border: 1px solid rgba(255,255,255,0.2); display: block; margin: 0.5rem 0; }
-
-        .recording { animation: pulseMic 1.5s infinite; color: #f87171 !important; }
-        @keyframes pulseMic { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
-        .speaking { animation: pulseSpeak 1.5s infinite; color: #60a5fa !important; }
-        @keyframes pulseSpeak { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-
-        /* Аватарка LARISA AI */
-        .larisa-avatar {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
+        .container {
+            width: var(--container);
+            margin-inline: auto;
         }
-        .larisa-avatar-container {
-            border-radius: 50%;
-            background: linear-gradient(to top right, #f472b6, #a855f7);
-            padding: 2px;
-            box-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
-        }
-        .larisa-avatar-inner {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background-color: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(16px);
-            overflow: hidden;
+
+        .nav {
+            position: sticky;
+            top: 16px;
+            z-index: 20;
+            width: var(--container);
+            margin: 16px auto 0;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 12px 14px 12px 18px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: rgba(9, 8, 6, 0.68);
+            box-shadow: 0 18px 60px rgba(0, 0, 0, 0.32);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
         }
 
-        @keyframes eye-blink { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.1); } }
-        .eye-icon-analyzing { animation: eye-blink 2s infinite ease-in-out; }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            white-space: nowrap;
+        }
+
+        .logo-mark {
+            display: grid;
+            width: 38px;
+            height: 38px;
+            place-items: center;
+            border-radius: 50%;
+            color: #191006;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--copper));
+            box-shadow: 0 12px 28px rgba(220, 174, 88, 0.28);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-links a {
+            padding: 10px 13px;
+            border-radius: 999px;
+            color: var(--muted);
+            font-size: 14px;
+            transition: color 180ms ease, background 180ms ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+            background: rgba(255, 248, 232, 0.08);
+        }
+
+        .nav-cta,
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 46px;
+            padding: 12px 18px;
+            border: 0;
+            border-radius: 999px;
+            color: #170f07;
+            font-weight: 800;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold) 52%, #b9763a);
+            box-shadow: 0 16px 38px rgba(220, 174, 88, 0.22);
+            transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+        }
+
+        .btn:hover,
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            filter: saturate(1.1);
+            box-shadow: 0 20px 44px rgba(220, 174, 88, 0.3);
+        }
+
+        .btn.secondary {
+            color: var(--text);
+            border: 1px solid var(--line);
+            background: rgba(255, 248, 232, 0.08);
+            box-shadow: none;
+        }
+
+        .hero {
+            position: relative;
+            display: grid;
+            grid-template-columns: minmax(0, 1.02fr) minmax(340px, 0.98fr);
+            gap: 36px;
+            align-items: center;
+            padding: 88px 0 60px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            width: fit-content;
+            padding: 8px 12px;
+            border: 1px solid rgba(220, 174, 88, 0.32);
+            border-radius: 999px;
+            color: var(--gold-light);
+            background: rgba(220, 174, 88, 0.09);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #72ff9f;
+            box-shadow: 0 0 0 0 rgba(114, 255, 159, 0.52);
+            animation: pulse 1.8s infinite;
+        }
+
+        h1,
+        h2,
+        h3,
+        p {
+            margin-top: 0;
+        }
+
+        h1 {
+            max-width: 820px;
+            margin: 24px 0 20px;
+            font-family: "Playfair Display", Georgia, serif;
+            font-size: clamp(54px, 8vw, 118px);
+            line-height: 0.88;
+            letter-spacing: -0.07em;
+        }
+
+        .hero-gradient {
+            color: transparent;
+            background: linear-gradient(120deg, #fff8e8 0%, #ffd98a 42%, #a85f33 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        .hero-lead {
+            max-width: 650px;
+            margin-bottom: 30px;
+            color: var(--muted-strong);
+            font-size: clamp(17px, 2vw, 21px);
+            line-height: 1.65;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .stats {
+            display: grid;
+            max-width: 700px;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .stat {
+            padding: 18px;
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            background: rgba(255, 248, 232, 0.06);
+        }
+
+        .stat strong {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--gold-light);
+            font-size: 28px;
+        }
+
+        .stat span {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .hero-showcase {
+            position: relative;
+            min-height: 640px;
+        }
+
+        .portrait-card {
+            position: absolute;
+            overflow: hidden;
+            border: 1px solid rgba(255, 248, 232, 0.16);
+            border-radius: 38px;
+            background: var(--card);
+            box-shadow: var(--shadow);
+            transform: translateZ(0);
+        }
+
+        .portrait-card.main {
+            inset: 0 0 auto 7%;
+            height: 560px;
+        }
+
+        .portrait-card.small {
+            right: 0;
+            bottom: 0;
+            width: 48%;
+            height: 250px;
+            border-radius: 30px;
+        }
+
+        .portrait-card.left {
+            left: 0;
+            bottom: 54px;
+            width: 38%;
+            height: 210px;
+            border-radius: 30px;
+        }
+
+        .portrait-card img {
+            height: 100%;
+            object-fit: cover;
+            filter: saturate(0.92) contrast(1.08);
+            transform: scale(1.02);
+        }
+
+        .portrait-card::after,
+        .portfolio-card::after {
+            position: absolute;
+            inset: 0;
+            content: "";
+            pointer-events: none;
+            background: linear-gradient(180deg, transparent 35%, rgba(9, 8, 6, 0.72));
+        }
+
+        .floating-badge {
+            position: absolute;
+            right: 22px;
+            bottom: 22px;
+            z-index: 2;
+            width: min(260px, 76%);
+            padding: 16px;
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            background: rgba(9, 8, 6, 0.68);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .floating-badge span {
+            display: block;
+            color: var(--gold-light);
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .floating-badge strong {
+            display: block;
+            margin-top: 6px;
+            font-size: 20px;
+            line-height: 1.2;
+        }
+
+        .section {
+            padding: 70px 0;
+        }
+
+        .section-head {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            max-width: 760px;
+        }
+
+        .section-kicker {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--gold-light);
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        h2 {
+            margin-bottom: 0;
+            font-family: "Playfair Display", Georgia, serif;
+            font-size: clamp(36px, 5.5vw, 72px);
+            line-height: 0.96;
+            letter-spacing: -0.055em;
+        }
+
+        .section-copy {
+            max-width: 410px;
+            margin-bottom: 0;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .service-card {
+            position: relative;
+            overflow: hidden;
+            min-height: 260px;
+            padding: 24px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            background: linear-gradient(180deg, rgba(255, 248, 232, 0.1), rgba(255, 248, 232, 0.035));
+            transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(220, 174, 88, 0.46);
+            background: linear-gradient(180deg, rgba(220, 174, 88, 0.14), rgba(255, 248, 232, 0.04));
+        }
+
+        .service-card::before {
+            position: absolute;
+            top: -80px;
+            right: -80px;
+            width: 160px;
+            height: 160px;
+            content: "";
+            border-radius: 999px;
+            background: rgba(220, 174, 88, 0.16);
+            filter: blur(8px);
+        }
+
+        .service-icon {
+            display: grid;
+            width: 54px;
+            height: 54px;
+            place-items: center;
+            margin-bottom: 36px;
+            border-radius: 18px;
+            color: #170f07;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            font-size: 24px;
+        }
+
+        .service-card h3 {
+            margin-bottom: 12px;
+            font-size: 22px;
+        }
+
+        .service-card p {
+            margin-bottom: 24px;
+            color: var(--muted);
+            line-height: 1.62;
+        }
+
+        .price-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin-top: auto;
+            color: var(--muted-strong);
+            font-size: 14px;
+        }
+
+        .price-row strong {
+            color: var(--gold-light);
+            font-size: 24px;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr 1fr;
+            grid-auto-rows: 260px;
+            gap: 14px;
+        }
+
+        .portfolio-card {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--line);
+            border-radius: 32px;
+            background: var(--card);
+            box-shadow: 0 16px 50px rgba(0, 0, 0, 0.22);
+        }
+
+        .portfolio-card.tall {
+            grid-row: span 2;
+        }
+
+        .portfolio-card.wide {
+            grid-column: span 2;
+        }
+
+        .portfolio-card img {
+            height: 100%;
+            object-fit: cover;
+            transition: transform 450ms ease, filter 450ms ease;
+            filter: saturate(0.88) contrast(1.06);
+        }
+
+        .portfolio-card:hover img {
+            transform: scale(1.055);
+            filter: saturate(1.04) contrast(1.08);
+        }
+
+        .portfolio-label {
+            position: absolute;
+            right: 18px;
+            bottom: 18px;
+            left: 18px;
+            z-index: 2;
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .portfolio-label strong {
+            display: block;
+            font-size: 21px;
+        }
+
+        .portfolio-label span {
+            color: var(--muted-strong);
+            font-size: 13px;
+        }
+
+        .portfolio-label em {
+            flex: 0 0 auto;
+            padding: 8px 10px;
+            border-radius: 999px;
+            color: #170f07;
+            background: var(--gold-light);
+            font-size: 12px;
+            font-style: normal;
+            font-weight: 800;
+        }
+
+        .process {
+            display: grid;
+            grid-template-columns: 0.95fr 1.05fr;
+            gap: 16px;
+        }
+
+        .video-card,
+        .steps-card,
+        .booking-card,
+        .contact-card {
+            border: 1px solid var(--line);
+            border-radius: 34px;
+            background: rgba(255, 248, 232, 0.065);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .video-card {
+            position: relative;
+            overflow: hidden;
+            min-height: 530px;
+        }
+
+        .video-card img {
+            height: 100%;
+            min-height: 530px;
+            object-fit: cover;
+            filter: saturate(0.86) contrast(1.05);
+        }
+
+        .video-card::after {
+            position: absolute;
+            inset: 0;
+            content: "";
+            background: linear-gradient(180deg, transparent 25%, rgba(9, 8, 6, 0.82));
+        }
+
+        .play-chip {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            z-index: 2;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 13px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: rgba(9, 8, 6, 0.58);
+            backdrop-filter: blur(14px);
+        }
+
+        .video-copy {
+            position: absolute;
+            right: 26px;
+            bottom: 26px;
+            left: 26px;
+            z-index: 2;
+        }
+
+        .video-copy h3 {
+            margin-bottom: 10px;
+            font-size: 30px;
+            line-height: 1.08;
+        }
+
+        .video-copy p {
+            margin-bottom: 0;
+            color: var(--muted-strong);
+            line-height: 1.62;
+        }
+
+        .steps-card {
+            padding: 28px;
+        }
+
+        .step {
+            display: grid;
+            grid-template-columns: 60px minmax(0, 1fr);
+            gap: 18px;
+            padding: 22px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .step:last-child {
+            border-bottom: 0;
+        }
+
+        .step-number {
+            display: grid;
+            width: 52px;
+            height: 52px;
+            place-items: center;
+            border-radius: 18px;
+            color: var(--gold-light);
+            background: rgba(220, 174, 88, 0.12);
+            font-weight: 800;
+        }
+
+        .step h3 {
+            margin-bottom: 8px;
+            font-size: 22px;
+        }
+
+        .step p {
+            margin-bottom: 0;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .reviews {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .review-card {
+            padding: 24px;
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            background: rgba(255, 248, 232, 0.065);
+        }
+
+        .stars {
+            margin-bottom: 18px;
+            color: var(--gold-light);
+            letter-spacing: 0.12em;
+        }
+
+        .review-card p {
+            color: var(--muted-strong);
+            line-height: 1.7;
+        }
+
+        .review-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        .avatar {
+            display: grid;
+            width: 44px;
+            height: 44px;
+            place-items: center;
+            border-radius: 50%;
+            color: #170f07;
+            background: linear-gradient(135deg, var(--gold-light), var(--copper));
+            font-weight: 900;
+        }
+
+        .review-author strong {
+            display: block;
+        }
+
+        .review-author span {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .booking-wrap {
+            display: grid;
+            grid-template-columns: 0.86fr 1.14fr;
+            gap: 16px;
+            align-items: stretch;
+        }
+
+        .contact-card {
+            position: relative;
+            overflow: hidden;
+            padding: 32px;
+            background:
+                linear-gradient(180deg, rgba(220, 174, 88, 0.18), rgba(255, 248, 232, 0.06)),
+                rgba(255, 248, 232, 0.06);
+        }
+
+        .contact-card::after {
+            position: absolute;
+            right: -90px;
+            bottom: -110px;
+            width: 260px;
+            height: 260px;
+            content: "";
+            border-radius: 999px;
+            background: rgba(220, 174, 88, 0.18);
+            filter: blur(3px);
+        }
+
+        .contact-card h2 {
+            margin-bottom: 18px;
+        }
+
+        .contact-card p {
+            position: relative;
+            z-index: 1;
+            color: var(--muted-strong);
+            line-height: 1.72;
+        }
+
+        .contact-list {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            gap: 12px;
+            margin: 28px 0;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            border: 1px solid rgba(255, 248, 232, 0.14);
+            border-radius: 18px;
+            background: rgba(9, 8, 6, 0.2);
+        }
+
+        .contact-icon {
+            display: grid;
+            width: 38px;
+            height: 38px;
+            place-items: center;
+            border-radius: 14px;
+            background: rgba(220, 174, 88, 0.16);
+        }
+
+        .booking-card {
+            padding: 28px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .field {
+            display: grid;
+            gap: 8px;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            color: var(--muted-strong);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            min-height: 54px;
+            padding: 14px 15px;
+            border: 1px solid rgba(255, 248, 232, 0.14);
+            border-radius: 18px;
+            outline: 0;
+            color: var(--text);
+            background: rgba(9, 8, 6, 0.46);
+            transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+        }
+
+        textarea {
+            min-height: 118px;
+            resize: vertical;
+        }
+
+        select option {
+            color: #15100b;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: rgba(255, 217, 138, 0.72);
+            box-shadow: 0 0 0 4px rgba(220, 174, 88, 0.12);
+            background: rgba(9, 8, 6, 0.68);
+        }
+
+        .form-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 18px;
+        }
+
+        .form-note {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .success-message {
+            display: none;
+            margin-top: 16px;
+            padding: 14px 16px;
+            border: 1px solid rgba(114, 255, 159, 0.22);
+            border-radius: 18px;
+            color: #c8ffd7;
+            background: rgba(45, 150, 78, 0.12);
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .footer {
+            padding: 34px 0 40px;
+            border-top: 1px solid var(--line);
+            color: var(--muted);
+        }
+
+        .footer-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .socials {
+            display: flex;
+            gap: 10px;
+        }
+
+        .socials a {
+            display: grid;
+            width: 42px;
+            height: 42px;
+            place-items: center;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            background: rgba(255, 248, 232, 0.06);
+            transition: transform 180ms ease, color 180ms ease, border-color 180ms ease;
+        }
+
+        .socials a:hover {
+            transform: translateY(-2px);
+            color: var(--gold-light);
+            border-color: rgba(220, 174, 88, 0.44);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(22px);
+            transition: opacity 520ms ease, transform 520ms ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes drift {
+            to {
+                transform: translate3d(34px, 42px, 0) scale(1.08);
+            }
+        }
+
+        @keyframes pulse {
+            70% {
+                box-shadow: 0 0 0 12px rgba(114, 255, 159, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(114, 255, 159, 0);
+            }
+        }
+
+        @media (max-width: 1040px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero,
+            .process,
+            .booking-wrap {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding-top: 64px;
+            }
+
+            .hero-showcase {
+                min-height: 560px;
+            }
+
+            .services-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .reviews {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 760px) {
+            :root {
+                --container: min(100vw - 22px, 1180px);
+            }
+
+            .nav {
+                top: 10px;
+                margin-top: 10px;
+                padding: 9px 10px 9px 12px;
+            }
+
+            .logo span:last-child {
+                display: none;
+            }
+
+            .nav-cta {
+                min-height: 42px;
+                padding: 10px 13px;
+                font-size: 13px;
+            }
+
+            .hero {
+                gap: 26px;
+                padding: 48px 0 42px;
+            }
+
+            .hero-actions,
+            .form-footer,
+            .footer-inner,
+            .section-head {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .hero-actions .btn,
+            .form-footer .btn {
+                width: 100%;
+            }
+
+            .stats,
+            .services-grid,
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-showcase {
+                min-height: 480px;
+            }
+
+            .portrait-card.main {
+                left: 0;
+                height: 430px;
+            }
+
+            .portrait-card.left {
+                width: 46%;
+                height: 150px;
+                bottom: 22px;
+            }
+
+            .portrait-card.small {
+                width: 56%;
+                height: 180px;
+            }
+
+            .floating-badge {
+                right: 14px;
+                bottom: 14px;
+            }
+
+            .section {
+                padding: 46px 0;
+            }
+
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+                grid-auto-rows: 300px;
+            }
+
+            .portfolio-card.tall,
+            .portfolio-card.wide {
+                grid-column: auto;
+                grid-row: auto;
+            }
+
+            .video-card,
+            .video-card img {
+                min-height: 430px;
+            }
+
+            .step {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .booking-card,
+            .contact-card,
+            .steps-card {
+                padding: 20px;
+                border-radius: 26px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
+            }
+
+            .reveal {
+                opacity: 1;
+                transform: none;
+            }
+        }
     </style>
 </head>
-<body class="h-screen w-screen relative flex items-center justify-center p-4 sm:p-8">
+<body>
+    <div class="page-shell">
+        <div class="grain" aria-hidden="true"></div>
+        <div class="orb orb-one" aria-hidden="true"></div>
+        <div class="orb orb-two" aria-hidden="true"></div>
 
-    <div id="blob-1" class="absolute top-[-20%] left-[-20%] w-[50rem] h-[50rem] blob-shape animate-blob" style="background: radial-gradient(circle, rgba(219, 39, 119, 0.4) 0%, transparent 70%);"></div>
-    <div id="blob-2" class="absolute top-[10%] right-[-20%] w-[55rem] h-[55rem] blob-shape animate-blob animation-delay-2000" style="background: radial-gradient(circle, rgba(147, 51, 234, 0.4) 0%, transparent 70%);"></div>
-    <div id="blob-3" class="absolute bottom-[-30%] left-[10%] w-[60rem] h-[60rem] blob-shape animate-blob animation-delay-4000" style="background: radial-gradient(circle, rgba(79, 70, 229, 0.4) 0%, transparent 70%);"></div>
-
-    <!-- Экран авторизации -->
-    <div id="auth-overlay" class="absolute inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md bg-black/40 transition-all duration-500">
-        <div class="liquid-glass w-full max-w-md p-8 sm:p-10 rounded-[2.5rem] flex flex-col gap-6 shadow-2xl transform transition-transform duration-500">
-            <div class="text-center mb-2">
-                <div class="w-20 h-20 mx-auto mb-4 larisa-avatar-container shadow-[0_0_20px_rgba(236,72,153,0.4)]">
-                    <div class="larisa-avatar-inner">
-                        <img src="image.png" alt="LARISA AI Avatar" class="larisa-avatar" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=L&background=f472b6&color=fff&size=128';">
-                    </div>
-                </div>
-                <h2 id="auth-title" class="text-2xl font-semibold text-white tracking-wide">С возвращением</h2>
-                <p id="auth-subtitle" class="text-white/50 text-sm mt-1 transition-colors duration-300">Войдите, чтобы общаться с LARISA</p>
-            </div>
-            
-            <form id="auth-form" class="flex flex-col gap-4 relative">
-                <input type="text" id="auth-name" class="hidden liquid-glass-input rounded-2xl px-5 py-4 text-white outline-none placeholder-white/40 transition-all focus:ring-1 focus:ring-pink-500/50" placeholder="Ваше имя" required disabled>
-                <input type="email" id="auth-email" class="liquid-glass-input rounded-2xl px-5 py-4 text-white outline-none placeholder-white/40 transition-all focus:ring-1 focus:ring-pink-500/50" placeholder="Email" required>
-                <input type="password" id="auth-pass" class="liquid-glass-input rounded-2xl px-5 py-4 text-white outline-none placeholder-white/40 transition-all focus:ring-1 focus:ring-pink-500/50" placeholder="Пароль" required minlength="6">
-                <button type="submit" id="auth-submit-btn" class="w-full py-4 mt-2 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white font-medium shadow-[0_0_15px_rgba(168,85,247,0.3)] transition-all transform hover:scale-[1.02] active:scale-95 text-lg">Войти</button>
-            </form>
-            
-            <div class="flex items-center gap-4 my-1">
-                <div class="h-px bg-white/10 flex-1"></div>
-                <span class="text-white/30 text-xs uppercase tracking-wider">или</span>
-                <div class="h-px bg-white/10 flex-1"></div>
-            </div>
-
-            <button type="button" id="google-login-btn" class="w-full py-3.5 rounded-2xl liquid-glass-input hover:bg-white/10 text-white font-medium transition-all transform hover:scale-[1.02] active:scale-95 text-sm sm:text-base flex items-center justify-center gap-3">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                </svg>
-                <span>Продолжить с Google</span>
-            </button>
-
-            <div class="text-center text-sm text-white/50 mt-2">
-                <span id="auth-switch-text">Нет аккаунта?</span> 
-                <button type="button" id="auth-switch-btn" class="text-pink-400 hover:text-pink-300 transition-colors font-medium ml-1 outline-none">Создать</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Настройки -->
-    <div id="settings-modal" class="absolute inset-0 z-50 hidden flex items-center justify-center p-4 backdrop-blur-md bg-black/50 transition-opacity opacity-0 duration-300">
-        <div class="liquid-glass w-full max-w-lg p-6 sm:p-8 rounded-[2rem] flex flex-col gap-6 shadow-2xl transform scale-95 transition-transform duration-300 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b border-white/10 pb-4">
-                <h2 class="text-xl font-semibold text-white tracking-wide">Настройки LARISA</h2>
-                <button id="close-settings-btn" class="text-white/50 hover:text-white transition"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
-            </div>
-            
-            <div class="flex flex-col gap-5 mt-2">
-                <div>
-                    <label class="block text-sm text-white/80 mb-2">Креативность (Температура): <span id="temp-val" class="font-mono text-pink-400">0.7</span></label>
-                    <input type="range" id="temp-slider" min="0" max="1" step="0.1" value="0.7" class="w-full accent-pink-500 bg-white/10 rounded-lg appearance-none h-2">
-                </div>
-
-                <div class="flex items-center gap-3">
-                    <input type="checkbox" id="auto-voice-toggle" class="w-5 h-5 accent-pink-500 bg-white/10 border-none rounded cursor-pointer">
-                    <label for="auto-voice-toggle" class="text-sm text-white/80 cursor-pointer select-none">Озвучивать ответы автоматически</label>
-                </div>
-
-                <div>
-                    <label class="block text-sm text-white/80 mb-2">Системный Промпт:</label>
-                    <textarea id="system-prompt-input" rows="4" class="w-full liquid-glass-input rounded-xl text-white px-4 py-3 text-sm outline-none focus:ring-1 focus:ring-pink-500/50 resize-none"></textarea>
-                </div>
-            </div>
-            <div class="flex justify-end gap-3 mt-4 border-t border-white/10 pt-4">
-                <button id="reset-settings-btn" class="px-5 py-2.5 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/10 transition">Сбросить</button>
-                <button id="save-settings-btn" class="px-6 py-2.5 rounded-xl text-sm bg-gradient-to-r from-pink-500 to-purple-600 text-white font-medium hover:opacity-90 transition shadow-lg">Сохранить</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Модальное окно предпросмотра -->
-    <div id="preview-modal" class="absolute inset-0 z-[60] hidden flex items-center justify-center p-4 sm:p-8 backdrop-blur-md bg-black/80 transition-opacity opacity-0 duration-300">
-        <div class="w-full h-full max-w-6xl bg-white rounded-2xl flex flex-col overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300">
-            <div class="bg-gray-900 px-4 py-3 flex justify-between items-center shrink-0 border-b border-gray-800">
-                <div class="flex items-center gap-3">
-                    <div class="flex gap-1.5">
-                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                    </div>
-                    <span class="text-gray-400 text-sm font-mono ml-2">Песочница LARISA (Предпросмотр)</span>
-                </div>
-                <button id="close-preview-btn" class="text-gray-400 hover:text-white transition bg-white/10 hover:bg-white/20 rounded-lg p-1.5">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-            </div>
-            <iframe id="preview-iframe" class="flex-1 w-full bg-white border-none" sandbox="allow-scripts allow-modals allow-forms allow-same-origin"></iframe>
-        </div>
-    </div>
-
-    <!-- Главный контейнер -->
-    <div id="main-app" class="liquid-glass w-full max-w-3xl h-full max-h-[900px] rounded-[2.5rem] flex flex-col relative z-10 overflow-hidden shadow-2xl opacity-0 scale-95 pointer-events-none transition-all duration-500">
-        
-        <!-- Сайдбар -->
-        <div id="sidebar-overlay" class="absolute inset-0 sidebar-overlay z-30 hidden opacity-0 transition-opacity duration-300 cursor-pointer"></div>
-        <div id="sidebar" class="absolute left-0 top-0 h-full w-64 liquid-glass bg-black/40 border-r border-white/10 transform -translate-x-full transition-transform duration-300 z-40 flex flex-col p-6 shadow-2xl">
-            <div class="flex items-center justify-between mb-8">
-                <h3 class="text-white font-semibold tracking-wide text-lg">Меню</h3>
-                <button id="close-sidebar-btn" class="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 text-white/50 hover:text-white"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"></path></svg></button>
-            </div>
-            <div class="flex flex-col gap-3 flex-1">
-                <button id="new-chat-btn" class="flex items-center gap-3 text-white/80 hover:text-white p-3 rounded-xl hover:bg-white/10 text-left w-full group"><div class="w-8 h-8 rounded-full bg-pink-500/20 text-pink-400 flex items-center justify-center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></div><span class="font-medium">Новый чат</span></button>
-                <button id="settings-btn" class="flex items-center gap-3 text-white/80 hover:text-white p-3 rounded-xl hover:bg-white/10 text-left w-full group"><div class="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div><span class="font-medium">Настройки</span></button>
-            </div>
-            <div class="mt-6 pt-6 border-t border-white/10 flex items-center gap-3">
-                <div class="w-10 h-10 larisa-avatar-container p-[1.5px]">
-                    <div class="larisa-avatar-inner">
-                        <img src="image.png" alt="LARISA AI" class="larisa-avatar" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=L&background=f472b6&color=fff&size=64';">
-                    </div>
-                </div>
-                <div><div class="text-white font-medium text-sm">LARISA AI</div><div class="text-white/40 text-xs">v 6.5 Top Edition</div></div>
-            </div>
-        </div>
-
-        <header class="h-20 border-b border-white/10 flex items-center px-4 sm:px-8 shrink-0 bg-white/5 z-20">
-            <button id="menu-btn" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 text-white/70 transition mr-3"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
-            <div class="relative w-10 h-10 sm:w-12 sm:h-12 larisa-avatar-container p-[1.5px]">
-                <div class="larisa-avatar-inner">
-                    <img src="image.png" alt="LARISA AI" class="larisa-avatar" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=L&background=f472b6&color=fff&size=64';">
-                </div>
-            </div>
-            <div class="ml-4 flex-1">
-                <h1 class="text-white font-semibold text-base sm:text-lg tracking-wide">LARISA AI</h1>
-                <p id="user-status" class="text-white/40 text-[10px] sm:text-xs tracking-wider uppercase mt-0.5 truncate">Собеседник: Вы</p>
-            </div>
-            <button id="logout-btn" class="w-10 h-10 rounded-full liquid-glass-btn flex items-center justify-center hover:bg-white/10 transition text-white/70 hover:text-white" title="Выйти"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></button>
+        <header class="nav" aria-label="Главная навигация">
+            <a class="logo" href="#top" aria-label="BARBER HAUS">
+                <span class="logo-mark">BH</span>
+                <span>BARBER HAUS</span>
+            </a>
+            <nav class="nav-links" aria-label="Разделы сайта">
+                <a href="#services">Услуги</a>
+                <a href="#portfolio">Портфолио</a>
+                <a href="#process">Процесс</a>
+                <a href="#reviews">Отзывы</a>
+                <a href="#booking">Запись</a>
+            </nav>
+            <a class="nav-cta" href="#booking">Записаться</a>
         </header>
 
-        <main id="chat-container" class="flex-1 overflow-y-auto p-4 sm:p-8 flex flex-col gap-6 relative z-10 scroll-smooth pb-20">
-            <!-- Сообщения -->
-        </main>
-        
-        <!-- Кнопка скролла вниз (НОВОЕ) -->
-        <button id="scroll-bottom-btn" class="hidden absolute bottom-36 right-8 w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-all z-30 shadow-[0_4px_15px_rgba(0,0,0,0.3)] border border-white/10 opacity-0 transform translate-y-4">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
-        </button>
-
-        <div id="typing-indicator" class="hidden absolute bottom-36 left-8 flex items-center gap-3 z-20">
-            <div class="w-8 h-8 larisa-avatar-container p-[1.5px]">
-                <div class="larisa-avatar-inner flex items-center justify-center">
-                    <img id="typing-avatar-img" src="image.png" alt="LARISA AI" class="larisa-avatar" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=L&background=f472b6&color=fff&size=32';">
-                    <svg id="typing-eye-icon" class="hidden w-5 h-5 text-white/80 eye-icon-analyzing" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                </div>
-            </div>
-            <div class="msg-bot rounded-full px-4 py-2 flex gap-1.5 items-center shadow-lg">
-                <div class="w-1.5 h-1.5 bg-white/60 rounded-full typing-dot"></div>
-                <div class="w-1.5 h-1.5 bg-white/60 rounded-full typing-dot"></div>
-                <div class="w-1.5 h-1.5 bg-white/60 rounded-full typing-dot"></div>
-            </div>
-        </div>
-
-        <footer class="p-4 sm:p-6 shrink-0 relative z-20 flex flex-col">
-            <!-- Выбор Модели и Фичи -->
-            <div class="flex items-center justify-between mb-3 px-2">
-                <div class="relative group">
-                    <select id="main-model-select" class="bg-black/40 border border-white/10 text-white/90 text-xs sm:text-sm rounded-full pl-4 pr-8 py-1.5 outline-none appearance-none cursor-pointer hover:bg-white/10 transition shadow-lg backdrop-blur-md font-medium">
-                        <option value="mistral-large-latest" class="bg-gray-900 text-white">✨ LARISA PRO (Текст)</option>
-                        <option value="mistral-small-latest" class="bg-gray-900 text-white">⚡ LARISA MINI (Быстрая)</option>
-                        <option value="codestral-latest" class="bg-gray-900 text-white">💻 LARISA CODE (Программист)</option>
-                        <option value="pixtral-12b-2409" class="bg-gray-900 text-white">👁️ LARISA VISION (Фото)</option>
-                    </select>
-                    <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/50">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"></path></svg>
+        <main id="top">
+            <section class="hero container">
+                <div class="hero-copy reveal">
+                    <div class="eyebrow"><span class="pulse-dot"></span> premium cuts • online booking</div>
+                    <h1>Твой стиль начинается с <span class="hero-gradient">идеальной стрижки</span></h1>
+                    <p class="hero-lead">Портфолио барбера, где видно качество: аккуратные фейды, чистая борода, стильный уход и запись без лишних переписок.</p>
+                    <div class="hero-actions">
+                        <a class="btn" href="#booking">Выбрать время</a>
+                        <a class="btn secondary" href="#portfolio">Смотреть работы</a>
+                    </div>
+                    <div class="stats" aria-label="Достижения">
+                        <div class="stat">
+                            <strong>1 800+</strong>
+                            <span>довольных клиентов</span>
+                        </div>
+                        <div class="stat">
+                            <strong>4.9</strong>
+                            <span>средняя оценка</span>
+                        </div>
+                        <div class="stat">
+                            <strong>45 мин</strong>
+                            <span>стрижка без спешки</span>
+                        </div>
                     </div>
                 </div>
-                <button id="surprise-btn" class="text-xs text-white/60 hover:text-pink-400 transition flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-full hover:bg-white/10 border border-white/5">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
-                    <span class="hidden sm:inline">Удиви меня</span>
-                </button>
-            </div>
+                <div class="hero-showcase reveal" aria-label="Фотографии работ барбера">
+                    <div class="portrait-card main">
+                        <img src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&w=1100&q=82" alt="Барбер делает стильную стрижку клиенту" fetchpriority="high">
+                        <div class="floating-badge">
+                            <span>свежий результат</span>
+                            <strong>Фейд, текстура и укладка за один визит</strong>
+                        </div>
+                    </div>
+                    <div class="portrait-card left">
+                        <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=700&q=78" alt="Классический интерьер барбершопа" loading="lazy">
+                    </div>
+                    <div class="portrait-card small">
+                        <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&w=700&q=78" alt="Оформление бороды в барбершопе" loading="lazy">
+                    </div>
+                </div>
+            </section>
 
-            <div id="image-preview-container" class="hidden mb-3 ml-2 relative w-20 h-20 group">
-                <img id="image-preview" src="" class="w-full h-full object-cover rounded-xl border-2 border-pink-500/50 shadow-lg" alt="Preview">
-                <button id="remove-image-btn" class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full text-white flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-md">✕</button>
-            </div>
+            <section class="section container" id="services">
+                <div class="section-head reveal">
+                    <div class="section-title">
+                        <span class="section-kicker">услуги</span>
+                        <h2>То, за чем возвращаются каждую неделю</h2>
+                    </div>
+                    <p class="section-copy">Прозрачные цены, чистые инструменты, консультация по форме лица и укладке перед каждой услугой.</p>
+                </div>
+                <div class="services-grid">
+                    <article class="service-card reveal">
+                        <div class="service-icon">✂</div>
+                        <h3>Мужская стрижка</h3>
+                        <p>Форма, текстура, чистые контуры и укладка под твой стиль жизни.</p>
+                        <div class="price-row"><span>45–60 минут</span><strong>от 2 500 ₽</strong></div>
+                    </article>
+                    <article class="service-card reveal">
+                        <div class="service-icon">◒</div>
+                        <h3>Fade / Crop</h3>
+                        <p>Плавный переход без пятен, правильный силуэт и фотогеничный результат.</p>
+                        <div class="price-row"><span>60 минут</span><strong>от 3 000 ₽</strong></div>
+                    </article>
+                    <article class="service-card reveal">
+                        <div class="service-icon">♛</div>
+                        <h3>Борода</h3>
+                        <p>Окантовка, горячее полотенце, уход и форма, которая держится.</p>
+                        <div class="price-row"><span>30 минут</span><strong>от 1 600 ₽</strong></div>
+                    </article>
+                    <article class="service-card reveal">
+                        <div class="service-icon">★</div>
+                        <h3>Комплекс</h3>
+                        <p>Стрижка, борода, уход и укладка — максимум эффекта за один визит.</p>
+                        <div class="price-row"><span>90 минут</span><strong>от 4 200 ₽</strong></div>
+                    </article>
+                </div>
+            </section>
 
-            <div class="liquid-glass-input rounded-3xl flex items-end p-2 focus-within:ring-1 focus-within:ring-pink-500/30 transition-all duration-300 relative">
-                <input type="file" id="file-input" class="hidden" accept="image/png, image/jpeg, image/webp">
-                <button id="attach-btn" class="w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-full flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5 transition mb-0.5" title="Прикрепить фото">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-                </button>
-                <button id="mic-btn" class="w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-full flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5 transition mb-0.5" title="Голосовой ввод">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
-                </button>
-                
-                <textarea id="user-input" rows="1" class="flex-1 bg-transparent border-none text-white px-2 py-3 outline-none placeholder-white/30 text-sm sm:text-base resize-none self-center" placeholder="Спроси, попроси код или напиши «Нарисуй...»"></textarea>
-                
-                <button id="stop-btn" class="hidden w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-full bg-white/10 flex items-center justify-center text-white ml-1 mb-0.5"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"></rect></svg></button>
-                <button id="send-btn" class="w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center text-white ml-1 mb-0.5">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                </button>
-            </div>
-            
-            <!-- Инфо под полем ввода со счетчиком -->
-            <div class="flex justify-between items-center mt-3 px-3">
-                <span class="text-[10px] text-white/20">В настройках можно выбрать "мозг" для LARISA</span>
-                <span id="char-count" class="text-[10px] text-white/30 font-mono font-medium">0 / 2000</span>
+            <section class="section container" id="portfolio">
+                <div class="section-head reveal">
+                    <div class="section-title">
+                        <span class="section-kicker">портфолио</span>
+                        <h2>Работы, которые продают лучше слов</h2>
+                    </div>
+                    <p class="section-copy">Галерея сделана с lazy-loading, поэтому выглядит дорого и не тормозит даже на телефонах.</p>
+                </div>
+                <div class="portfolio-grid">
+                    <article class="portfolio-card tall reveal">
+                        <img src="https://images.unsplash.com/photo-1622286346003-c5c7e63b1088?auto=format&fit=crop&w=900&q=80" alt="Стрижка fade крупным планом" loading="lazy">
+                        <div class="portfolio-label"><div><strong>Skin Fade</strong><span>чистый переход</span></div><em>top</em></div>
+                    </article>
+                    <article class="portfolio-card reveal">
+                        <img src="https://images.unsplash.com/photo-1517832606299-7ae9b720a186?auto=format&fit=crop&w=800&q=80" alt="Клиент после укладки волос" loading="lazy">
+                        <div class="portfolio-label"><div><strong>Texture Crop</strong><span>матовая укладка</span></div><em>new</em></div>
+                    </article>
+                    <article class="portfolio-card reveal">
+                        <img src="https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?auto=format&fit=crop&w=800&q=80" alt="Оформление бороды машинкой" loading="lazy">
+                        <div class="portfolio-label"><div><strong>Beard Line</strong><span>острый контур</span></div><em>clean</em></div>
+                    </article>
+                    <article class="portfolio-card wide reveal">
+                        <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=1200&q=80" alt="Мастер работает в атмосферном барбершопе" loading="lazy">
+                        <div class="portfolio-label"><div><strong>Full Service</strong><span>стрижка + борода + уход</span></div><em>vip</em></div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section container" id="process">
+                <div class="section-head reveal">
+                    <div class="section-title">
+                        <span class="section-kicker">процесс</span>
+                        <h2>Без рандома — только понятный результат</h2>
+                    </div>
+                    <p class="section-copy">Клиент сразу понимает, за что платит: консультация, техника, уход и рекомендации после визита.</p>
+                </div>
+                <div class="process">
+                    <article class="video-card reveal">
+                        <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=1000&q=80" alt="Рабочее место барбера с инструментами" loading="lazy">
+                        <div class="play-chip">● backstage cuts</div>
+                        <div class="video-copy">
+                            <h3>Атмосфера, в которой хочется остаться</h3>
+                            <p>Тёмный премиальный визуал, живые акценты и блоки доверия помогают превратить просмотр портфолио в запись.</p>
+                        </div>
+                    </article>
+                    <div class="steps-card reveal">
+                        <div class="step">
+                            <div class="step-number">01</div>
+                            <div>
+                                <h3>Диагностика</h3>
+                                <p>Разбираем форму лица, рост волос и привычную укладку, чтобы стрижка выглядела хорошо каждый день.</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">02</div>
+                            <div>
+                                <h3>Точная техника</h3>
+                                <p>Работа ножницами, машинкой и шейвером без спешки: чистый фейд, ровные линии, контроль деталей.</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">03</div>
+                            <div>
+                                <h3>Финальная укладка</h3>
+                                <p>Подбираем продукт, показываем как повторить результат дома и сохраняем твой образ в базе.</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">04</div>
+                            <div>
+                                <h3>Повторная запись</h3>
+                                <p>Можно забронировать следующий слот сразу, чтобы не искать свободное время в последний момент.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section container" id="reviews">
+                <div class="section-head reveal">
+                    <div class="section-title">
+                        <span class="section-kicker">отзывы</span>
+                        <h2>Клиенты приходят за стрижкой, остаются за сервисом</h2>
+                    </div>
+                </div>
+                <div class="reviews">
+                    <article class="review-card reveal">
+                        <div class="stars">★★★★★</div>
+                        <p>«Показал пару референсов, мастер сразу понял форму. Фейд очень чистый, борода держит линию уже вторую неделю.»</p>
+                        <div class="review-author"><div class="avatar">М</div><div><strong>Марк</strong><span>fade + борода</span></div></div>
+                    </article>
+                    <article class="review-card reveal">
+                        <div class="stars">★★★★★</div>
+                        <p>«Записался через сайт за минуту. На месте всё чётко: кофе, консультация, результат как на фото в портфолио.»</p>
+                        <div class="review-author"><div class="avatar">А</div><div><strong>Артём</strong><span>crop + укладка</span></div></div>
+                    </article>
+                    <article class="review-card reveal">
+                        <div class="stars">★★★★★</div>
+                        <p>«Наконец нашёл барбера, который не просто стрижёт, а объясняет, как поддерживать форму дома. Рекомендую.»</p>
+                        <div class="review-author"><div class="avatar">Д</div><div><strong>Даниил</strong><span>комплекс</span></div></div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section container" id="booking">
+                <div class="booking-wrap">
+                    <aside class="contact-card reveal">
+                        <span class="section-kicker">онлайн-запись</span>
+                        <h2>Забери удобное время сегодня</h2>
+                        <p>Оставь заявку, выбери услугу и время. Форма покажет подтверждение, а данные можно подключить к Telegram, CRM или любому сервису записи.</p>
+                        <div class="contact-list">
+                            <a class="contact-item" href="tel:+79999999999"><span class="contact-icon">☎</span><span>+7 999 999-99-99</span></a>
+                            <a class="contact-item" href="mailto:booking@barberhaus.ru"><span class="contact-icon">✉</span><span>booking@barberhaus.ru</span></a>
+                            <a class="contact-item" href="https://t.me/" target="_blank" rel="noreferrer"><span class="contact-icon">↗</span><span>Telegram для быстрой связи</span></a>
+                        </div>
+                        <a class="btn secondary" href="#portfolio">Сначала посмотреть работы</a>
+                    </aside>
+
+                    <form class="booking-card reveal" id="bookingForm">
+                        <div class="form-grid">
+                            <div class="field">
+                                <label for="name">Имя</label>
+                                <input id="name" name="name" type="text" placeholder="Как к вам обращаться" autocomplete="name" required>
+                            </div>
+                            <div class="field">
+                                <label for="phone">Телефон</label>
+                                <input id="phone" name="phone" type="tel" placeholder="+7 ___ ___-__-__" autocomplete="tel" required>
+                            </div>
+                            <div class="field">
+                                <label for="service">Услуга</label>
+                                <select id="service" name="service" required>
+                                    <option value="">Выберите услугу</option>
+                                    <option>Мужская стрижка</option>
+                                    <option>Fade / Crop</option>
+                                    <option>Борода</option>
+                                    <option>Комплекс</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label for="time">Когда удобно</label>
+                                <select id="time" name="time" required>
+                                    <option value="">Выберите время</option>
+                                    <option>Сегодня после 18:00</option>
+                                    <option>Завтра днём</option>
+                                    <option>Завтра вечером</option>
+                                    <option>На выходных</option>
+                                </select>
+                            </div>
+                            <div class="field full">
+                                <label for="comment">Комментарий</label>
+                                <textarea id="comment" name="comment" placeholder="Например: хочу low fade, бороду оставить короче"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-footer">
+                            <p class="form-note">Нажимая кнопку, вы отправляете заявку на обратную связь. Это демо-форма без передачи данных на сервер.</p>
+                            <button class="btn" type="submit">Отправить заявку</button>
+                        </div>
+                        <div class="success-message" id="successMessage" role="status">Заявка готова. Администратор свяжется с вами для подтверждения времени.</div>
+                    </form>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-inner container">
+                <div>© 2026 BARBER HAUS. Стрижки, борода, уход.</div>
+                <div class="socials" aria-label="Социальные сети">
+                    <a href="https://instagram.com/" target="_blank" rel="noreferrer" aria-label="Instagram">IG</a>
+                    <a href="https://t.me/" target="_blank" rel="noreferrer" aria-label="Telegram">TG</a>
+                    <a href="https://vk.com/" target="_blank" rel="noreferrer" aria-label="VK">VK</a>
+                </div>
             </div>
         </footer>
     </div>
 
     <script>
-        const API_KEY = 'x7hLVf8zXBtC3wXV3p4my0EOMhJ20Q5s';
-        const API_URL = 'https://api.mistral.ai/v1/chat/completions';
+        const revealItems = document.querySelectorAll('.reveal');
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        // Настройка Markdown
-        marked.setOptions({
-            highlight: (code, lang) => hljs.highlightAuto(code).value,
-            breaks: true, gfm: true
-        });
-
-        let currentUser = 'Вы';
-        let chatHistory = [];
-        let currentAbortController = null;
-        let attachedImageBase64 = null;
-        let welcomeMessageId = null;
-
-        const DEFAULT_PROMPT = 'Твое имя — LARISA AI. Ты продвинутая нейросеть-помощница. Всегда отвечай на русском. Если просят написать игру или программу, старайся писать её на HTML+JS в ОДНОМ блоке кода, чтобы пользователь мог её сразу запустить. Пиши код в Markdown блоках.';
-        
-        let botSettings = {
-            temperature: parseFloat(localStorage.getItem('larisa_temp')) || 0.7,
-            systemPrompt: localStorage.getItem('larisa_prompt') || DEFAULT_PROMPT,
-            model: localStorage.getItem('larisa_model') || 'mistral-large-latest',
-            autoVoice: localStorage.getItem('larisa_autovoice') === 'true'
-        };
-
-        // --- ДИНАМИЧЕСКИЕ ТЕМЫ ---
-        const blobs = [document.getElementById('blob-1'), document.getElementById('blob-2'), document.getElementById('blob-3')];
-        function updateTheme(model) {
-            const themes = {
-                'mistral-large-latest': ['rgba(219, 39, 119, 0.4)', 'rgba(147, 51, 234, 0.4)', 'rgba(79, 70, 229, 0.4)'], // Розовый/Пурпурный
-                'mistral-small-latest': ['rgba(56, 189, 248, 0.4)', 'rgba(59, 130, 246, 0.4)', 'rgba(99, 102, 241, 0.4)'], // Неоново-голубой
-                'codestral-latest': ['rgba(16, 185, 129, 0.4)', 'rgba(5, 150, 105, 0.4)', 'rgba(4, 120, 87, 0.4)'],       // Хакерский зеленый
-                'pixtral-12b-2409': ['rgba(249, 115, 22, 0.4)', 'rgba(245, 158, 11, 0.4)', 'rgba(234, 179, 8, 0.4)']       // Теплый желтый/оранжевый
-            };
-            const colors = themes[model] || themes['mistral-large-latest'];
-            blobs[0].style.background = `radial-gradient(circle, ${colors[0]} 0%, transparent 70%)`;
-            blobs[1].style.background = `radial-gradient(circle, ${colors[1]} 0%, transparent 70%)`;
-            blobs[2].style.background = `radial-gradient(circle, ${colors[2]} 0%, transparent 70%)`;
-        }
-
-        const chatContainer = document.getElementById('chat-container');
-        const userInput = document.getElementById('user-input');
-        const sendBtn = document.getElementById('send-btn');
-        const authOverlay = document.getElementById('auth-overlay');
-        const mainApp = document.getElementById('main-app');
-        const fileInput = document.getElementById('file-input');
-        const imgPreviewContainer = document.getElementById('image-preview-container');
-        const imgPreview = document.getElementById('image-preview');
-        const typingIndicator = document.getElementById('typing-indicator');
-        const typingAvatarImg = document.getElementById('typing-avatar-img');
-        const typingEyeIcon = document.getElementById('typing-eye-icon');
-        const charCountEl = document.getElementById('char-count');
-        const scrollBtn = document.getElementById('scroll-bottom-btn');
-
-        // Элементы новой панели
-        const mainModelSelect = document.getElementById('main-model-select');
-        const surpriseBtn = document.getElementById('surprise-btn');
-        let previousModel = botSettings.model;
-
-        // Инициализация
-        mainModelSelect.value = botSettings.model;
-        updateTheme(botSettings.model);
-
-        mainModelSelect.addEventListener('change', (e) => {
-            const selected = e.target.value;
-            botSettings.model = selected;
-            localStorage.setItem('larisa_model', selected);
-            updateTheme(selected);
-
-            if (selected === 'pixtral-12b-2409' && !attachedImageBase64) {
-                fileInput.click();
-            } else if (selected !== 'pixtral-12b-2409') {
-                previousModel = selected;
-            }
-        });
-
-        surpriseBtn.addEventListener('click', () => {
-            const prompts = [
-                "Напиши код классической змейки на Python",
-                "Нарисуй футуристичный киберпанк город с неоновыми огнями",
-                "Создай крутую кнопку на HTML и CSS с анимацией свечения",
-                "Как объяснить теорию относительности 5-летнему ребенку?",
-                "Сгенерируй картинку: кот-астронавт на Марсе пьет кофе",
-                "Напиши скрипт красивого падающего снега на JS для сайта"
-            ];
-            userInput.value = prompts[Math.floor(Math.random() * prompts.length)];
-            userInput.dispatchEvent(new Event('input')); // Обновляем счетчик
-            userInput.focus();
-        });
-
-        // --- АВТОРИЗАЦИЯ ---
-        function showApp(userName) {
-            currentUser = userName;
-            document.getElementById('user-status').innerText = `Онлайн: ${userName}`;
-            authOverlay.classList.add('opacity-0', 'pointer-events-none');
-            setTimeout(() => authOverlay.classList.add('hidden'), 500);
-            mainApp.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
-            loadChat();
-        }
-
-        document.getElementById('auth-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const isLogin = document.getElementById('auth-name').classList.contains('hidden');
-            let name = isLogin ? (localStorage.getItem('larisa_user_name') || 'Гость') : document.getElementById('auth-name').value;
-            localStorage.setItem('larisa_user_name', name);
-            localStorage.setItem('larisa_auth', 'true');
-            showApp(name);
-        });
-
-        document.getElementById('auth-switch-btn').addEventListener('click', () => {
-            const isLogin = document.getElementById('auth-name').classList.toggle('hidden');
-            document.getElementById('auth-title').innerText = isLogin ? 'С возвращением' : 'Регистрация';
-            document.getElementById('auth-submit-btn').innerText = isLogin ? 'Войти' : 'Создать';
-        });
-
-        let googleClient;
-        window.addEventListener('load', () => {
-            if (window.google) {
-                googleClient = google.accounts.oauth2.initTokenClient({
-                    client_id: '332099797152-5vscnrdirtnk13tlfcqteogev9pj001v.apps.googleusercontent.com',
-                    scope: 'profile email',
-                    callback: (tokenResponse) => {
-                        if (tokenResponse && tokenResponse.access_token) {
-                            fetch('https://www.googleapis.com/oauth2/v3/userinfo', { headers: { Authorization: `Bearer ${tokenResponse.access_token}` } })
-                            .then(res => res.json())
-                            .then(data => {
-                                const name = data.name || data.given_name || 'Google User';
-                                localStorage.setItem('larisa_user_name', name);
-                                localStorage.setItem('larisa_auth', 'true');
-                                showApp(name);
-                            }).catch(console.error);
-                        }
-                    },
-                });
-            }
-        });
-
-        document.getElementById('google-login-btn').addEventListener('click', () => {
-            if (window.location.protocol === 'file:') return alert("Google запрещает вход через file://. Используйте локальный сервер!");
-            if (googleClient) googleClient.requestAccessToken();
-        });
-
-        document.getElementById('logout-btn').addEventListener('click', () => {
-            localStorage.removeItem('larisa_auth');
-            mainApp.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
-            authOverlay.classList.remove('hidden');
-            setTimeout(() => authOverlay.classList.remove('opacity-0', 'pointer-events-none'), 10);
-            initChat(true);
-        });
-
-        window.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('larisa_auth') === 'true') {
-                showApp(localStorage.getItem('larisa_user_name') || 'Пользователь');
-            } else {
-                initChat();
-            }
-        });
-
-        // --- ЛОГИКА ФОТО (VISION) ---
-        document.getElementById('attach-btn').addEventListener('click', () => fileInput.click());
-        document.getElementById('remove-image-btn').addEventListener('click', () => {
-            attachedImageBase64 = null;
-            fileInput.value = '';
-            imgPreviewContainer.classList.add('hidden');
-            
-            if (mainModelSelect.value === 'pixtral-12b-2409') {
-                mainModelSelect.value = previousModel;
-                botSettings.model = previousModel;
-                updateTheme(previousModel);
-            }
-        });
-
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    let width = img.width; let height = img.height;
-                    const MAX = 600; 
-                    if (width > height && width > MAX) { height *= MAX / width; width = MAX; } 
-                    else if (height > MAX) { width *= MAX / height; height = MAX; }
-                    canvas.width = width; canvas.height = height;
-                    ctx.drawImage(img, 0, 0, width, height);
-                    attachedImageBase64 = canvas.toDataURL('image/jpeg', 0.7);
-                    imgPreview.src = attachedImageBase64;
-                    imgPreviewContainer.classList.remove('hidden');
-                    
-                    if (mainModelSelect.value !== 'pixtral-12b-2409') {
-                        previousModel = mainModelSelect.value;
-                        mainModelSelect.value = 'pixtral-12b-2409';
-                        botSettings.model = 'pixtral-12b-2409';
-                        updateTheme('pixtral-12b-2409');
+        if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+            revealItems.forEach((item) => item.classList.add('visible'));
+        } else {
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        revealObserver.unobserve(entry.target);
                     }
-                };
-                img.src = event.target.result;
-            };
-            reader.readAsDataURL(file);
-        });
-
-        // --- ЛОГИКА ЧАТА И СКРОЛЛА ---
-        chatContainer.addEventListener('scroll', () => {
-            if (chatContainer.scrollHeight - chatContainer.scrollTop - chatContainer.clientHeight > 150) {
-                scrollBtn.classList.remove('hidden');
-                setTimeout(() => scrollBtn.classList.remove('opacity-0', 'translate-y-4'), 10);
-            } else {
-                scrollBtn.classList.add('opacity-0', 'translate-y-4');
-                setTimeout(() => scrollBtn.classList.add('hidden'), 300);
-            }
-        });
-
-        scrollBtn.addEventListener('click', () => {
-            chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });
-        });
-
-        function saveChat() { localStorage.setItem('larisa_history', JSON.stringify(chatHistory)); }
-        
-        function loadChat() {
-            const saved = localStorage.getItem('larisa_history');
-            chatContainer.querySelectorAll('.msg-bubble-wrap').forEach(m => m.remove());
-            if (saved) {
-                chatHistory = JSON.parse(saved);
-                if (chatHistory.length > 1) {
-                    chatHistory.forEach(msg => { 
-                        if (msg.role === 'system') return;
-                        if (Array.isArray(msg.content)) {
-                            const textObj = msg.content.find(c => c.type === 'text');
-                            const imgObj = msg.content.find(c => c.type === 'image_url');
-                            appendMessage(textObj ? textObj.text : '', msg.role, false, imgObj ? imgObj.image_url.url : null);
-                        } else {
-                            appendMessage(msg.content, msg.role, false); 
-                        }
-                    });
-                } else { initChat(); }
-            } else { initChat(); }
-        }
-
-        function initChat(clearLocal = false) {
-            chatHistory = [{ role: 'system', content: botSettings.systemPrompt }];
-            chatContainer.querySelectorAll('.msg-bubble-wrap').forEach(m => m.remove());
-            if (clearLocal) localStorage.removeItem('larisa_history');
-            const welcomeText = "Привет! Я <b>LARISA AI (Версия 6.5 Top Edition)</b>.\n\n✨ Добавлены новые топовые функции: скачивание кода, счетчики, умная прокрутка и крутая анимация загрузки картинок!\nПопроси меня **\"нарисовать\"** что-то или написать программу.";
-            welcomeMessageId = appendMessage(welcomeText, 'assistant', false);
-        }
-
-        async function fetchMistralResponse(userMessageText, imageBase64) {
-            let messageContent;
-            if (imageBase64) {
-                messageContent = [{ type: "text", text: userMessageText || "Опиши это изображение подробно." }, { type: "image_url", image_url: { url: imageBase64 } }];
-            } else {
-                messageContent = userMessageText;
-            }
-
-            chatHistory.push({ role: 'user', content: messageContent });
-            saveChat();
-            currentAbortController = new AbortController();
-
-            try {
-                const hasImage = chatHistory.some(m => Array.isArray(m.content));
-                const modelToUse = hasImage ? 'pixtral-12b-2409' : botSettings.model;
-
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
-                    signal: currentAbortController.signal,
-                    body: JSON.stringify({ model: modelToUse, messages: chatHistory, temperature: botSettings.temperature })
                 });
+            }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
-                if (!response.ok) throw new Error(`Ошибка API: ${response.status}`);
-                const data = await response.json();
-                const reply = data.choices[0].message.content;
-
-                chatHistory.push({ role: 'assistant', content: reply });
-                const lastUserMsg = chatHistory[chatHistory.length - 2];
-                if (Array.isArray(lastUserMsg.content)) {
-                    lastUserMsg.content = `[Пользователь отправил изображение] ${userMessageText}`;
-                }
-                saveChat();
-                return reply;
-            } catch (e) { 
-                if (e.name === 'AbortError') return "🚫 Генерация остановлена.";
-                return "Ошибка сети. Убедитесь, что ключ активен."; 
-            }
+            revealItems.forEach((item, index) => {
+                item.style.transitionDelay = `${Math.min(index * 35, 220)}ms`;
+                revealObserver.observe(item);
+            });
         }
 
-        // Логика предпросмотра кода
-        window.openPreview = (code) => {
-            const previewModal = document.getElementById('preview-modal');
-            const previewIframe = document.getElementById('preview-iframe');
-            previewIframe.srcdoc = code;
-            previewModal.classList.remove('hidden');
-            setTimeout(() => {
-                previewModal.classList.remove('opacity-0');
-                previewModal.firstElementChild.classList.remove('scale-95');
-            }, 10);
-        };
-        
-        document.getElementById('close-preview-btn').addEventListener('click', () => {
-            const previewModal = document.getElementById('preview-modal');
-            const previewIframe = document.getElementById('preview-iframe');
-            previewModal.classList.add('opacity-0');
-            previewModal.firstElementChild.classList.add('scale-95');
-            setTimeout(() => {
-                previewModal.classList.add('hidden');
-                previewIframe.srcdoc = '';
-            }, 300);
-        });
+        const bookingForm = document.querySelector('#bookingForm');
+        const successMessage = document.querySelector('#successMessage');
 
-        // НОВОЕ: Функция для скачивания кода
-        window.downloadCode = (code, lang) => {
-            const extMap = { 'javascript': 'js', 'js': 'js', 'python': 'py', 'py': 'py', 'html': 'html', 'css': 'css', 'json': 'json', 'bash': 'sh', 'sh': 'sh' };
-            const ext = extMap[lang.toLowerCase()] || 'txt';
-            const blob = new Blob([code], { type: 'text/plain;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `larisa_code.${ext}`;
-            a.style.display = 'none';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        };
+        bookingForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const formData = new FormData(bookingForm);
+            const name = String(formData.get('name') || '').trim();
+            const phone = String(formData.get('phone') || '').trim();
+            const service = String(formData.get('service') || '').trim();
+            const time = String(formData.get('time') || '').trim();
 
-        function appendMessage(text, role, save = true, imgSrc = null, msgIdToReplace = null) {
-            if (welcomeMessageId) {
-                const welcomeMsg = document.querySelector(`[data-msg-id="${welcomeMessageId}"]`);
-                if (welcomeMsg) welcomeMsg.classList.add('hidden');
-                welcomeMessageId = null;
-            }
-
-            const isUser = role === 'user';
-            const msgId = msgIdToReplace || Date.now();
-            
-            // Если мы заменяем временное сообщение (анимация рисования)
-            let wrap = document.querySelector(`[data-msg-id="${msgId}"]`);
-            
-            if (wrap) {
-                wrap.innerHTML = ''; // Очищаем старое содержимое
-            } else {
-                wrap = document.createElement('div');
-                wrap.dataset.msgId = msgId;
-                wrap.className = `msg-bubble-wrap flex gap-3 max-w-[95%] sm:max-w-[85%] msg-enter ${isUser ? 'self-end flex-row-reverse' : 'self-start'}`;
-            }
-            
-            if (!isUser) {
-                const avatarContainer = document.createElement('div');
-                avatarContainer.className = "w-8 h-8 sm:w-10 sm:h-10 shrink-0 larisa-avatar-container p-[1.5px] self-end mb-1";
-                avatarContainer.innerHTML = '<div class="larisa-avatar-inner"><img src="image.png" alt="LARISA AI" class="larisa-avatar" onerror="this.onerror=null; this.src=\'https://ui-avatars.com/api/?name=L&background=f472b6&color=fff&size=64\';"></div>';
-                wrap.appendChild(avatarContainer);
-            }
-
-            const bubbleContainer = document.createElement('div');
-            bubbleContainer.className = 'flex flex-col gap-1 flex-1 min-w-0';
-
-            const bubble = document.createElement('div');
-            bubble.className = `rounded-3xl px-5 py-3.5 text-sm text-white/95 shadow-lg markdown-body flex flex-col gap-2 ${isUser ? 'msg-user rounded-br-none' : 'msg-bot rounded-bl-none'}`;
-            
-            if (imgSrc) {
-                const imgEl = document.createElement('img');
-                imgEl.src = imgSrc;
-                imgEl.className = "max-w-[200px] sm:max-w-[250px] rounded-xl border border-white/20 self-start";
-                bubble.appendChild(imgEl);
-            }
-
-            const textEl = document.createElement('div');
-            textEl.innerHTML = isUser ? text : marked.parse(text);
-            bubble.appendChild(textEl);
-
-            if (!isUser) {
-                bubble.querySelectorAll('pre').forEach(pre => {
-                    const codeBlock = pre.querySelector('code');
-                    let lang = 'code';
-                    if(codeBlock && codeBlock.className) {
-                        const match = codeBlock.className.match(/language-(\w+)/);
-                        if(match) lang = match[1];
-                    }
-                    
-                    const header = document.createElement('div');
-                    header.className = 'code-header';
-                    
-                    const controls = document.createElement('div');
-                    controls.className = "flex items-center gap-3";
-                    
-                    const previewBtn = document.createElement('button');
-                    previewBtn.className = 'flex items-center gap-1 text-green-400 hover:text-green-300 transition cursor-pointer font-bold';
-                    previewBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Запуск';
-                    previewBtn.onclick = () => window.openPreview(codeBlock.innerText);
-                    controls.appendChild(previewBtn);
-
-                    // Кнопка Скачать (НОВОЕ)
-                    const downloadBtn = document.createElement('button');
-                    downloadBtn.className = 'flex items-center gap-1 text-blue-400 hover:text-blue-300 transition cursor-pointer font-bold';
-                    downloadBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> Скачать';
-                    downloadBtn.onclick = () => window.downloadCode(codeBlock.innerText, lang);
-                    controls.appendChild(downloadBtn);
-                    
-                    const copyBtn = document.createElement('button');
-                    copyBtn.className = 'flex items-center gap-1 hover:text-white transition cursor-pointer';
-                    copyBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Скопировать';
-                    copyBtn.onclick = () => window.copyToClipboard(codeBlock.innerText, copyBtn);
-                    controls.appendChild(copyBtn);
-
-                    const langSpan = document.createElement('span');
-                    langSpan.innerText = lang;
-
-                    header.appendChild(langSpan);
-                    header.appendChild(controls);
-                    pre.prepend(header);
-                });
-            }
-            
-            bubbleContainer.appendChild(bubble);
-            wrap.appendChild(bubbleContainer);
-            
-            if (!document.querySelector(`[data-msg-id="${msgId}"]`)) {
-                chatContainer.appendChild(wrap);
-            }
-            
-            chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });
-            if (save) saveChat();
-            
-            return msgId;
-        }
-
-        userInput.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = (this.scrollHeight < 150 ? this.scrollHeight : 150) + 'px';
-            // Обновляем счетчик символов
-            charCountEl.innerText = `${this.value.length} / 2000`;
-            if (this.value.length > 1900) charCountEl.classList.add('text-red-400');
-            else charCountEl.classList.remove('text-red-400');
-        });
-
-        sendBtn.addEventListener('click', async () => {
-            const text = userInput.value.trim();
-            if (!text && !attachedImageBase64) return;
-            if (text.length > 2000) return alert('Сообщение слишком длинное! Лимит 2000 символов.');
-            
-            const currentImage = attachedImageBase64;
-            userInput.value = '';
-            charCountEl.innerText = `0 / 2000`;
-            userInput.style.height = 'auto';
-            attachedImageBase64 = null;
-            imgPreviewContainer.classList.add('hidden');
-            fileInput.value = '';
-
-            appendMessage(text, 'user', true, currentImage);
-            
-            typingIndicator.classList.remove('hidden');
-            if (currentImage) {
-                typingAvatarImg.classList.add('hidden');
-                typingEyeIcon.classList.remove('hidden');
-            } else {
-                typingAvatarImg.classList.remove('hidden');
-                typingEyeIcon.classList.add('hidden');
-            }
-
-            sendBtn.classList.add('hidden');
-            document.getElementById('stop-btn').classList.remove('hidden');
-            
-            // --- ГЕНЕРАЦИЯ КАРТИНОК ---
-            const drawRegex = /^(?:нарисуй|сгенерируй(?: картинку| фото)?|draw)\s+(.+)/i;
-            const match = text.match(drawRegex);
-
-            if (match && !currentImage) {
-                chatHistory.push({ role: 'user', content: text });
-                saveChat();
-
-                // ВАЖНО: Квадратная картинка без текста
-                const imagePrompt = match[1] + ", square, no text, no letters, no watermarks, clear image";
-                const seed = Math.floor(Math.random() * 1000000);
-                const imgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(imagePrompt)}?width=512&height=512&nologo=true&seed=${seed}`;
-
-                // Создаем временное сообщение загрузки (Анимация "Рисую...")
-                const loadingMsgId = appendMessage(`🎨 LARISA колдует над картинкой: *«${match[1]}»*\nПодожди пару секунд...`, 'assistant', false);
-                typingIndicator.classList.add('hidden');
-
-                const img = new Image();
-                img.onload = () => {
-                    typingAvatarImg.classList.remove('hidden');
-                    typingEyeIcon.classList.add('hidden');
-                    sendBtn.classList.remove('hidden');
-                    document.getElementById('stop-btn').classList.add('hidden');
-
-                    const replyText = `Вот твоя картинка!\n\n![${match[1]}](${imgUrl})`;
-                    chatHistory.push({ role: 'assistant', content: replyText });
-                    saveChat();
-                    
-                    // Заменяем временное сообщение загрузки на готовую картинку
-                    appendMessage(replyText, 'assistant', false, null, loadingMsgId);
-                };
-                img.onerror = () => {
-                    sendBtn.classList.remove('hidden');
-                    document.getElementById('stop-btn').classList.add('hidden');
-                    const errorMsg = "Извини, не удалось сгенерировать картинку. Попробуй другой запрос.";
-                    chatHistory.push({ role: 'assistant', content: errorMsg });
-                    saveChat();
-                    appendMessage(errorMsg, 'assistant', false, null, loadingMsgId);
-                };
-                img.src = imgUrl;
+            if (!name || !phone || !service || !time) {
+                bookingForm.reportValidity();
                 return;
             }
-            // --- КОНЕЦ ГЕНЕРАЦИИ ---
 
-            const reply = await fetchMistralResponse(text, currentImage);
-            
-            typingIndicator.classList.add('hidden');
-            typingAvatarImg.classList.remove('hidden');
-            typingEyeIcon.classList.add('hidden');
-            sendBtn.classList.remove('hidden');
-            document.getElementById('stop-btn').classList.add('hidden');
-            
-            appendMessage(reply, 'assistant');
-
-            if (botSettings.autoVoice && reply && !reply.startsWith('🚫')) {
-                const dummyBtn = document.createElement('div');
-                window.speakText(reply, dummyBtn);
-            }
+            successMessage.textContent = `${name}, заявка на «${service}» принята. Свяжемся по номеру ${phone} и подтвердим ${time.toLowerCase()}.`;
+            successMessage.classList.add('show');
+            bookingForm.reset();
+            successMessage.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'nearest' });
         });
-
-        // Утилиты
-        window.copyToClipboard = (text, btn) => { navigator.clipboard.writeText(text); btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Скоп.'; setTimeout(() => btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Копировать', 2000); };
-        
-        function toggleSidebar() { 
-            document.getElementById('sidebar').classList.toggle('-translate-x-full'); 
-            document.getElementById('sidebar-overlay').classList.toggle('hidden'); 
-        }
-        document.getElementById('menu-btn').addEventListener('click', toggleSidebar);
-        document.getElementById('close-sidebar-btn').addEventListener('click', toggleSidebar);
-        document.getElementById('sidebar-overlay').addEventListener('click', toggleSidebar);
-        
-        document.getElementById('new-chat-btn').addEventListener('click', () => { initChat(true); toggleSidebar(); });
-
-        const settingsModal = document.getElementById('settings-modal');
-        document.getElementById('settings-btn').addEventListener('click', () => {
-            document.getElementById('temp-slider').value = botSettings.temperature;
-            document.getElementById('temp-val').innerText = botSettings.temperature;
-            document.getElementById('auto-voice-toggle').checked = botSettings.autoVoice;
-            document.getElementById('system-prompt-input').value = botSettings.systemPrompt;
-            settingsModal.classList.remove('hidden');
-            setTimeout(() => {
-                settingsModal.classList.remove('opacity-0');
-                settingsModal.firstElementChild.classList.remove('scale-95');
-            }, 10);
-            toggleSidebar();
-        });
-
-        function closeSettings() {
-            settingsModal.classList.add('opacity-0');
-            settingsModal.firstElementChild.classList.add('scale-95');
-            setTimeout(() => settingsModal.classList.add('hidden'), 300);
-        }
-        document.getElementById('close-settings-btn').addEventListener('click', closeSettings);
-
-        document.getElementById('temp-slider').addEventListener('input', (e) => {
-            document.getElementById('temp-val').innerText = e.target.value;
-        });
-
-        document.getElementById('save-settings-btn').addEventListener('click', () => {
-            botSettings.temperature = parseFloat(document.getElementById('temp-slider').value);
-            botSettings.autoVoice = document.getElementById('auto-voice-toggle').checked;
-            botSettings.systemPrompt = document.getElementById('system-prompt-input').value.trim();
-            
-            localStorage.setItem('larisa_temp', botSettings.temperature);
-            localStorage.setItem('larisa_autovoice', botSettings.autoVoice);
-            localStorage.setItem('larisa_prompt', botSettings.systemPrompt);
-            
-            if (chatHistory.length > 0 && chatHistory[0].role === 'system') {
-                chatHistory[0].content = botSettings.systemPrompt;
-                saveChat();
-            }
-            closeSettings();
-        });
-
-        userInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendBtn.click(); } });
-
-        document.getElementById('stop-btn').addEventListener('click', () => {
-            if (currentAbortController) currentAbortController.abort();
-        });
-        
-        let recognition;
-        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-            recognition = new SpeechRec();
-            recognition.lang = 'ru-RU';
-            recognition.continuous = false;
-            
-            recognition.onresult = (e) => {
-                userInput.value += (userInput.value ? ' ' : '') + e.results[0][0].transcript;
-                userInput.dispatchEvent(new Event('input')); // Обновляем счетчик
-            };
-            recognition.onstart = () => document.getElementById('mic-btn').classList.add('recording');
-            recognition.onend = () => document.getElementById('mic-btn').classList.remove('recording');
-            recognition.onerror = () => document.getElementById('mic-btn').classList.remove('recording');
-        }
-
-        document.getElementById('mic-btn').addEventListener('click', () => {
-            if (!recognition) return alert("Голосовой ввод не поддерживается браузером.");
-            document.getElementById('mic-btn').classList.contains('recording') ? recognition.stop() : recognition.start();
-        });
-
-        window.speakText = function(text, btnElement) {
-            if (!('speechSynthesis' in window)) return alert("Синтез речи не поддерживается.");
-            if (window.speechSynthesis.speaking) {
-                window.speechSynthesis.cancel();
-                document.querySelectorAll('.speaking').forEach(el => el.classList.remove('speaking'));
-                return;
-            }
-            const cleanText = text.replace(/#|\*|_|`|>|\[|\]|\(|\)|!\[.*\]\(.*\)/g, '');
-            let currentUtterance = new SpeechSynthesisUtterance(cleanText);
-            currentUtterance.lang = 'ru-RU';
-            currentUtterance.onstart = () => btnElement.classList.add('speaking');
-            currentUtterance.onend = () => btnElement.classList.remove('speaking');
-            window.speechSynthesis.speak(currentUtterance);
-        };
     </script>
 </body>
 </html>
